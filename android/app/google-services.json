@@ -1,0 +1,68 @@
+{
+  "project_info": {
+    "project_number": "1088583066892",
+    "firebase_url": "https://tubebox-139a9-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "tubebox-139a9",
+    "storage_bucket": "tubebox-139a9.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1088583066892:android:73f3a85c3f582078c1d529",
+        "android_client_info": {
+          "package_name": "com.tube.box.entertainment"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCA8tl1OZrIzZOJJo1KPhY5CXC1IsxZfAo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1088583066892:android:3e425dd8131e493fc1d529",
+        "android_client_info": {
+          "package_name": "com.tube.box.entertainment.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCA8tl1OZrIzZOJJo1KPhY5CXC1IsxZfAo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1088583066892:android:da7a323a696e7a4ec1d529",
+        "android_client_info": {
+          "package_name": "com.tube.box.entertainment.app.tubebox"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCA8tl1OZrIzZOJJo1KPhY5CXC1IsxZfAo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
