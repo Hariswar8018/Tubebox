@@ -1,16 +1,35 @@
-# tubebox
+# **Tubebox**
 
-A new Flutter project.
+### **🎥 Your Personal Video Streaming Companion**
 
-## Getting Started
+![1740977575573](https://github.com/user-attachments/assets/ecff0a81-a37b-495d-babf-1b92aa63efe4)
 
-This project is a starting point for a Flutter application.
+---
+## **🔗 App Details**
 
-A few resources to get you started if this is your first Flutter project:
+- **First Published:** March 2024  
+- **Google Play Store Link:** [Download from Play Store](https://play.google.com/store/apps/details?id=com.tube.box.entertainment.app)  
+- **Owner Name:** JAGDISH VERMA  
+- **Email:** [tubeboxhelp@gmail.com](mailto:tubeboxhelp@gmail.com)  
+- **Phone:** +91-8383061772
+  
+---
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## **📱 App Overview**
+
+![1740977575570](https://github.com/user-attachments/assets/222f99bc-7d2c-4647-8ee4-714d51f49fe3)
+
+**Tubebox** is a video streaming platform that allows users to enjoy a wide variety of video content. It also supports private video fetching via APIs or direct links, making it a versatile tool for managing and accessing your favorite videos.
+
+---
+
+## **🛠️ Features**
+
+- **Video Streaming:** Watch high-quality videos on-demand.  
+- **Private Video Fetching:** Securely fetch private videos with ease.  
+- **Fetch by API:** Retrieve video content programmatically via APIs.  
+- **Fetch by Link:** Fetch videos directly using their URLs.  
+
+---
+
