@@ -6,6 +6,7 @@ class VideoModel {
   final bool hd;
   final bool sd;
   final String s1;
+  final bool pin;
 
   VideoModel({
     required this.name,
@@ -15,6 +16,7 @@ class VideoModel {
     required this.hd,
     required this.sd,
     required this.s1,
+    required this.pin,
   });
 
   // Convert JSON to VideoModel
@@ -27,6 +29,7 @@ class VideoModel {
       hd: json['hd'] ?? false,
       sd: json['sd'] ?? false,
       s1: json['s1'] ?? '',
+      pin:json['pin']??false,
     );
   }
 
@@ -36,6 +39,7 @@ class VideoModel {
       'name': name,
       'id': id,
       'pic': pic,
+      'pin':pin,
       'link': link,
       'hd': hd,
       'sd': sd,

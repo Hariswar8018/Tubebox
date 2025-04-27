@@ -38,9 +38,9 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
     Size(21, 9),  // Cinematic
     Size(2, 1),   // Zoom Mode
     Size(16, 10), // With Padding
+    Size(9, 16),
   ];
 
-  // **Change Aspect Ratio** Like MX Player
   void _changeAspectRatio() {
     setState(() {
       aspectRatioIndex = (aspectRatioIndex + 1) % aspectRatios.length; // Cycle through ratios

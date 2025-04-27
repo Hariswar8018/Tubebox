@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:tubebox/admin/all.dart';
+import 'package:tubebox/main.dart';
 import 'package:tubebox/settings/add_video.dart';
 
 class Profile extends StatelessWidget {
@@ -71,104 +72,144 @@ Consult with a lawyer to ensure compliance with applicable laws.
   Widget build(BuildContext context) {
     double w=MediaQuery.of(context).size.width;
     double h=MediaQuery.of(context).size.height;
-    return Scaffold(
-      backgroundColor: Color(0xffFDE7EA),
-      body: admin?Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          InkWell(
-              onTap: (){
-                Navigator.push(
-                    context, PageTransition(
-                    child: AddVideo(), type: PageTransitionType.rightToLeft, duration: Duration(milliseconds: 200)
-                ));
-              },
-              child: Center(child: StripedBorderContainer(width: w-30, height: h/3-20, str: 'Add Video', h: Icon(Icons.add),))),
-          SizedBox(height: 50,),InkWell(
-              onTap: (){
-                Navigator.push(
-                    context, PageTransition(
-                    child: All_Videos(), type: PageTransitionType.rightToLeft, duration: Duration(milliseconds: 200)
-                ));
-              },
-              child: Center(child: StripedBorderContainer(width: w-30, height: h/3-20, str: 'See Video', h: Icon(Icons.remove_red_eye),))),
-        ],
-      ):
-      SingleChildScrollView(
-        padding: const EdgeInsets.all(16.0),
-        child: RichText(
-          text: TextSpan(
-            style: const TextStyle(fontSize: 16, color: Colors.black),
-            children: [
-              const TextSpan(text: '\n\n',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: Colors.red,
-                ),),
-              const TextSpan(text: 'Privacy Policy\n',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black,fontSize: 26
-                ),),
-              const TextSpan(text: 'Effective Date: 2024-2025\n\n',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: Colors.red,
-                ),),
-              const TextSpan(text: 'Introduction\nTubeBox.in (the Mobile App) is a video playing app. This Privacy Policy explains how we collect, use, disclose, and protect user information.\n\n'),
-              const TextSpan(text: 'Information Collection\n',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: Colors.red,
-                ),),
-              const TextSpan(text: '1. Personal Information: We collect email address (optional) and device information (e.g., model, operating system).\n'),
-              const TextSpan(text: '2. Non-Personal Information: We collect video viewing history and search queries.\n\n'),
-              // Example of an important point styled in bold red:
-              const TextSpan(
-                text: 'Important: ',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: Colors.red,
+    return SafeArea(
+      child: Scaffold(
+        backgroundColor: isnight?Colors.black:bgcolor,
+        body: admin?Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            InkWell(
+                onTap: (){
+                  Navigator.push(
+                      context, PageTransition(
+                      child: AddVideo(), type: PageTransitionType.rightToLeft, duration: Duration(milliseconds: 200)
+                  ));
+                },
+                child: Center(child: StripedBorderContainer(width: w-30, height: h/3-20, str: 'Add Video', h: Icon(Icons.add),))),
+            SizedBox(height: 50,),InkWell(
+                onTap: (){
+                  Navigator.push(
+                      context, PageTransition(
+                      child: All_Videos(), type: PageTransitionType.rightToLeft, duration: Duration(milliseconds: 200)
+                  ));
+                },
+                child: Center(child: StripedBorderContainer(width: w-30, height: h/3-20, str: 'See Video', h: Icon(Icons.remove_red_eye),))),
+          ],
+        ):
+        SingleChildScrollView(
+          padding:  EdgeInsets.all(16.0),
+          child: RichText(
+            text: TextSpan(
+              style:  TextStyle(fontSize: 16, color: Colors.black),
+              children: [
+                 TextSpan(text: 'Effective Date: 2024-2025\n\n',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.red,
+                  ),),
+                TextSpan(style: TextStyle(
+                  fontWeight: FontWeight.w400,
+                  color:!isnight?Colors.black:Colors.white,
+                ),text: 'Introduction\nTubeBox.in (the Mobile App) is a video playing app. This Privacy Policy explains how we collect, use, disclose, and protect user information.\n\n'),
+                 TextSpan(text: 'Information Collection\n',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.red,
+                  ),),
+                TextSpan(style: TextStyle(
+                  fontWeight: FontWeight.w400,
+                  color:!isnight?Colors.black:Colors.white,
+                ),text: '1. Personal Information: We collect email address (optional) and device information (e.g., model, operating system).\n'),
+                TextSpan(style: TextStyle(
+                  fontWeight: FontWeight.w400,
+                  color:!isnight?Colors.black:Colors.white,
+                ),text: '2. Non-Personal Information: We collect video viewing history and search queries.\n\n'),
+                // Example of an important point styled in bold red:
+                 TextSpan(
+                  text: 'Important: ',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.red,
+                  ),
                 ),
-              ),
-              const TextSpan(
-                text: 'Ensure that you review all the permissions requested by the app carefully.',
-              ),
-              const TextSpan(text: '\n\n'),
-              const TextSpan(text: 'Information Use\n- Provide App functionality\n- Improve video recommendations\n- Personalize user experience\n- Communicate updates and promotions\n\n'),
-              const TextSpan(text: 'Information Disclosure\n- Third-party video content providers\n- Advertising partners\n\n'),
-              const TextSpan(text: 'Data Security\nWe implement reasonable security measures to protect user information.\n\n'),
-              const TextSpan(text: 'User Rights\n- Access\n- Correction\n- Deletion\n- Opt-out\n\n',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: Colors.red,
-                ),),
-              const TextSpan(text: "Children's Privacy\nWatch Box is intended for users 13 and older. We comply with COPPA regulations.\n\n"),
-              const TextSpan(text: 'California Consumer Privacy Act (CCPA)\nUsers have the right to request data deletion, opt-out of data sale, and access their data.\n\n'),
-              const TextSpan(text: 'EU General Data Protection Regulation (GDPR)\nUsers have the right to data access, rectification, erasure, restriction, objection, and data portability.\n\n'),
-              const TextSpan(text: 'Changes\nWe reserve the right to update this Privacy Policy.\n\n'),
-              const TextSpan(text: 'Contacts & Support\nwww.tubebox.in\n',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: Colors.blue,
-                ),),
-              const TextSpan(text: 'tubeboxhelp@gmail.com\n\n',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: Colors.blue,
-                ),),
-              const TextSpan(text: 'Additional Information\nBy using TubeBox, you agree to our Terms of Service and this Privacy Policy.\n'),
-              const TextSpan(text: 'To comply with laws, consider adding:\n'),
-              const TextSpan(text: '- A "Do Not Sell My Personal Information" link (CCPA)\n'),
-              const TextSpan(text: '- A GDPR-compliant cookie consent banner\n'),
-              const TextSpan(text: '- COPPA-compliant parental consent for users under 13\n\n'),
-              const TextSpan(text: 'Consult with a lawyer to ensure compliance with applicable laws.\n',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: Colors.red,
-                ),),
-            ],
+                TextSpan(style: TextStyle(
+                  fontWeight: FontWeight.w400,
+                  color:!isnight?Colors.black:Colors.white,
+                ),
+                  text: 'Ensure that you review all the permissions requested by the app carefully.',
+                ),
+                 TextSpan(text: '\n\n'),
+                 TextSpan(style: TextStyle(
+                   fontWeight: FontWeight.w400,
+                   color:!isnight?Colors.black:Colors.white,
+                 ),text: 'Information Use\n- Provide App functionality\n- Improve video recommendations\n- Personalize user experience\n- Communicate updates and promotions\n\n'),
+                 TextSpan(style: TextStyle(
+                   fontWeight: FontWeight.w400,
+                   color:!isnight?Colors.black:Colors.white,
+                 ),text: 'Information Disclosure\n- Third-party video content providers\n- Advertising partners\n\n'),
+                 TextSpan(style: TextStyle(
+                   fontWeight: FontWeight.w400,
+                   color:!isnight?Colors.black:Colors.white,
+                 ),text: 'Data Security\nWe implement reasonable security measures to protect user information.\n\n'),
+                 TextSpan(text: 'User Rights\n- Access\n- Correction\n- Deletion\n- Opt-out\n\n',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.red,
+                  ),),
+                 TextSpan(style: TextStyle(
+                  fontWeight: FontWeight.w400,
+                  color:!isnight?Colors.black:Colors.white,
+                ),text: "Children's Privacy\nWatch Box is intended for users 13 and older. We comply with COPPA regulations.\n\n"),
+                 TextSpan(style: TextStyle(
+                  fontWeight: FontWeight.w400,
+                  color:!isnight?Colors.black:Colors.white,
+                ),text: 'California Consumer Privacy Act (CCPA)\nUsers have the right to request data deletion, opt-out of data sale, and access their data.\n\n'),
+                 TextSpan(style: TextStyle(
+                  fontWeight: FontWeight.w400,
+                  color:!isnight?Colors.black:Colors.white,
+                ),text: 'EU General Data Protection Regulation (GDPR)\nUsers have the right to data access, rectification, erasure, restriction, objection, and data portability.\n\n'),
+                 TextSpan(style: TextStyle(
+                  fontWeight: FontWeight.w400,
+                  color:!isnight?Colors.black:Colors.white,
+                ),text: 'Changes\nWe reserve the right to update this Privacy Policy.\n\n'),
+                 TextSpan(text: 'Contacts & Support\nwww.tubebox.in\n',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.blue,
+                  ),),
+                 TextSpan(text: 'tubeboxhelp@gmail.com\n\n',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.blue,
+                  ),),
+                 TextSpan(style: TextStyle(
+                  fontWeight: FontWeight.w400,
+                  color:!isnight?Colors.black:Colors.white,
+                ),text: 'Additional Information\nBy using TubeBox, you agree to our Terms of Service and this Privacy Policy.\n'),
+                 TextSpan(style: TextStyle(
+                  fontWeight: FontWeight.w400,
+                  color:!isnight?Colors.black:Colors.white,
+                ),text: 'To comply with laws, consider adding:\n'),
+                 TextSpan(style: TextStyle(
+                  fontWeight: FontWeight.w400,
+                  color:!isnight?Colors.black:Colors.white,
+                ),text: '- A "Do Not Sell My Personal Information" link (CCPA)\n'),
+                 TextSpan(style: TextStyle(
+                  fontWeight: FontWeight.w400,
+                  color:!isnight?Colors.black:Colors.white,
+                ),text: '- A GDPR-compliant cookie consent banner\n'),
+                 TextSpan(style: TextStyle(
+                  fontWeight: FontWeight.w400,
+                  color:!isnight?Colors.black:Colors.white,
+                ),text: '- COPPA-compliant parental consent for users under 13\n\n'),
+                 TextSpan(text: 'Consult with a lawyer to ensure compliance with applicable laws.\n',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.red,
+                  ),),
+              ],
+            ),
           ),
         ),
       ),

@@ -3,6 +3,7 @@ import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tubebox/admin/all.dart';
+import 'package:tubebox/main.dart';
 import 'package:tubebox/settings/add_video.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -42,12 +43,7 @@ class _JState extends State<J> {
     double w=MediaQuery.of(context).size.width;
     double h=MediaQuery.of(context).size.height;
     return Scaffold(
-      backgroundColor: Color(0xffFDE7EA),
-      appBar: AppBar(
-        backgroundColor: Color(0xffFDE7EA),
-        title: Text(" History",style: TextStyle(fontWeight: FontWeight.w800),),
-        automaticallyImplyLeading: false,
-      ),
+      backgroundColor: isnight?Colors.black:bgcolor,
       body: s1.isNotEmpty
           ? StreamBuilder(
         stream:FirebaseFirestore.instance
@@ -100,7 +96,7 @@ class _JState extends State<J> {
                             image: DecorationImage(image: NetworkImage(vi.pic),fit: BoxFit.cover)
                         ),
                       ),
-                      title: Text(vi.name,style: TextStyle(fontWeight: FontWeight.w800,height: 1.1),maxLines: 2),
+                      title: Text(vi.name,style: TextStyle(fontWeight: FontWeight.w800,height: 1.1,color: !isnight?Colors.black:Colors.white,),maxLines: 2),
                       subtitle: Row(
                         children: [
                           vi.sd?Padding(

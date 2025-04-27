@@ -54,16 +54,14 @@ dependencies:
   screen_brightness: ^2.1.1
   uni_links5: ^0.5.4
   google_mobile_ads: ^5.3.1
+  carousel_slider_plus: ^7.1.0
+  animated_notch_bottom_bar: ^1.0.3
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
 
-  # The "flutter_lints" package below contains a set of recommended lints to
-  # encourage good coding practices. The lint set provided by the package is
-  # activated in the `analysis_options.yaml` file located at the root of your
-  # package. See that file for information about deactivating specific lint
-  # rules and activating additional ones.
+
   flutter_lints: ^4.0.0
   flutter_launcher_icons: ^0.13.1
   change_app_package_name: ^1.5.0

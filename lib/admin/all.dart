@@ -44,6 +44,12 @@ class All_Videos extends StatelessWidget {
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 8.0), // Adds spacing
                       child: InkWell(
+                        onLongPress: () async {
+                          await FirebaseFirestore.instance
+                              .collection("video").doc(vi.id).update({
+                            "pin":!(vi.pin),
+                          });
+                        },
                         onTap: () {
                           Clipboard.setData(ClipboardData(text: "https://tubebox.in/${vi.id}"));
                           Global.showMessage(context, "Copied to Clipboard");
@@ -61,6 +67,15 @@ class All_Videos extends StatelessWidget {
                               title: Text(vi.name,style: TextStyle(fontWeight: FontWeight.w800),maxLines: 2,),
                               subtitle: Row(
                                 children: [
+                                  vi.pin?Padding(
+                                    padding: const EdgeInsets.only(right: 8.0),
+                                    child: Container(
+                                        color: Colors.red,
+                                        child: Padding(
+                                          padding: const EdgeInsets.only(left: 8,right: 8,top: 3.0,bottom: 3),
+                                          child: Text("PIN",style: TextStyle(color: Colors.white,fontSize: 12),),
+                                        )),
+                                  ):SizedBox(),
                                   vi.sd?Padding(
                                     padding: const EdgeInsets.only(right: 8.0),
                                     child: Container(

@@ -155,7 +155,7 @@ bool on=false;
             });
             try{
               String id=DateTime.now().microsecondsSinceEpoch.toString();
-              VideoModel vi=VideoModel(name: name.text, id: id, pic: pic, link: link.text, hd: hd, sd: sd, s1: s1.text);
+              VideoModel vi=VideoModel(name: name.text, id: id, pic: pic, link: link.text, hd: hd, sd: sd, s1: s1.text, pin: false);
               await FirebaseFirestore.instance.collection("video").doc(id).set(vi.toJson());
               setState(() {
                 on=false;
