@@ -19,7 +19,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 version: 1.0.0+1
 
 environment:
-  sdk: ^3.5.4
+  sdk: ">=3.6.0 <4.0.0"  # Matches amplify_auth_cognito's requirement
 
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions
@@ -56,6 +56,10 @@ dependencies:
   google_mobile_ads: ^5.3.1
   carousel_slider_plus: ^7.1.0
   animated_notch_bottom_bar: ^1.0.3
+  amplify_flutter: ^2.6.0
+  amplify_datastore: ^2.6.0
+  amplify_storage_s3: ^2.6.0
+  amplify_auth_cognito: ^2.6.0
 
 dev_dependencies:
   flutter_test:

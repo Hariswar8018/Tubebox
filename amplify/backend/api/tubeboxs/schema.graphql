@@ -1,0 +1,10 @@
+type Video @model {
+  id: ID!
+  name: String!
+  pic: String!
+  link: String!
+  hd: Boolean!
+  sd: Boolean!
+  s1: String!
+  pin: Boolean!
+}

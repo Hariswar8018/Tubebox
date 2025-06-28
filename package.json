@@ -1,0 +1,28 @@
+{
+  "name": "tubebox",
+  "version": "1.0.0",
+  "description": "![1740977575573](https://github.com/user-attachments/assets/ecff0a81-a37b-495d-babf-1b92aa63efe4)",
+  "main": "index.js",
+  "directories": {
+    "lib": "lib",
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@aws-amplify/backend": "^1.16.1",
+    "@aws-amplify/backend-cli": "^1.8.0",
+    "aws-cdk-lib": "^2.189.1",
+    "constructs": "^10.4.2",
+    "esbuild": "^0.25.5",
+    "tsx": "^4.20.3",
+    "typescript": "^5.8.3"
+  },
+  "dependencies": {
+    "aws-amplify": "^6.15.1"
+  }
+}

@@ -68,7 +68,6 @@ class _HomeState extends State<Home> {
   List<String> images=[],links=[];
 
   void initState(){
-    fetchImages();
     initUniLinks();
     _loadAd();
   }
@@ -248,7 +247,7 @@ class _HomeState extends State<Home> {
                                   child: Padding(
                                     padding: const EdgeInsets.only(left: 10,bottom: 6.0,top: 9,right: 12),
                                     child: TextFormField(
-                                      controller: text,maxLines: 20,minLines: 1,
+                                      controller: text,
                                       style: TextStyle(color: !isnight ? Colors.black : Colors.white), // Input text color
                                       decoration: InputDecoration(
                                           hintText:" Paste the Link here.....",hintStyle: TextStyle(color: !isnight?Colors.black:Colors.white),
@@ -365,6 +364,7 @@ class _HomeState extends State<Home> {
                 ),
               ),
               SizedBox(height: 15,),
+
               images.isNotEmpty?Container(
                 width: w,height: 250,
                 child: Stack(
@@ -379,11 +379,13 @@ class _HomeState extends State<Home> {
                         ),
                         child: Padding(
                           padding: const EdgeInsets.only(top: 15.0),
-                          child: CarouselSlider(
-                              controller: _controller,
-                              items: images.map((imageUrl) {
-                                return Positioned.fill(
-                                  child: InkWell(
+                          child: Container(
+                            width: MediaQuery.of(context).size.width-80,
+                            height: 150,
+                            child: CarouselSlider(
+                                controller: _controller,
+                                items: images.map((imageUrl) {
+                                  return InkWell(
                                     onTap: (){
                                       int y= images.indexOf(imageUrl);
                                       print(links);
@@ -394,28 +396,30 @@ class _HomeState extends State<Home> {
                                       height: 150,
                                       decoration: BoxDecoration(
                                         borderRadius: BorderRadius.circular(4),
-                                        image: DecorationImage(image: NetworkImage(imageUrl,
-                                          ),fit: BoxFit.cover,)
+                                        image: DecorationImage(image: NetworkImage(
+                                          imageUrl,
+                                        ),
+                                          fit: BoxFit.cover,)
                                       ),
                                     ),
-                                  ),
-                                );
-                              }).toList(),
-                              options: CarouselOptions(
-                                height: 150,
-                                aspectRatio: 16/9,
-                                viewportFraction: 1,
-                                initialPage: 0,
-                                enableInfiniteScroll: true,
-                                reverse: false,
-                                autoPlay: true,
-                                autoPlayInterval: Duration(seconds: 3),
-                                autoPlayAnimationDuration: Duration(milliseconds: 400),
-                                autoPlayCurve: Curves.fastOutSlowIn,
-                                enlargeCenterPage: true,
-                                enlargeFactor: 0.5,
-                                scrollDirection: Axis.horizontal,
-                              )
+                                  );
+                                }).toList(),
+                                options: CarouselOptions(
+                                  height: 150,
+                                  aspectRatio: 16/9,
+                                  viewportFraction: 1,
+                                  initialPage: 0,
+                                  enableInfiniteScroll: true,
+                                  reverse: false,
+                                  autoPlay: true,
+                                  autoPlayInterval: Duration(seconds: 3),
+                                  autoPlayAnimationDuration: Duration(milliseconds: 400),
+                                  autoPlayCurve: Curves.fastOutSlowIn,
+                                  enlargeCenterPage: true,
+                                  enlargeFactor: 0.5,
+                                  scrollDirection: Axis.horizontal,
+                                )
+                            ),
                           ),
                         ),
                       ),
@@ -437,6 +441,7 @@ class _HomeState extends State<Home> {
                   ],
                 ),
               ): SizedBox(),
+
               SizedBox(height: 15,),
               Container(
                 width: w,
@@ -594,9 +599,15 @@ class _HomeState extends State<Home> {
   InterstitialAd? _interstitialAd;
 
   Future<void> load(BuildContext context,String link) async {
+    nowstartprocess(context, link);
+
+    return ;
+
     final SharedPreferences pref= await SharedPreferences.getInstance();
     int y= pref.getInt("time")??0;
     await pref.setInt("time",y+1);
+
+
     print(y);
     if(y%3==0||y!=0){
       loadInterstitialAd(context, link,true);

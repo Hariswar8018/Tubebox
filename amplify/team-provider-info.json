@@ -1,0 +1,26 @@
+{
+  "dev": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-tubeboxs-dev-53226-authRole",
+      "UnauthRoleArn": "arn:aws:iam::242650470567:role/amplify-tubeboxs-dev-53226-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::242650470567:role/amplify-tubeboxs-dev-53226-authRole",
+      "Region": "us-east-1",
+      "DeploymentBucketName": "amplify-tubeboxs-dev-53226-deployment",
+      "UnauthRoleName": "amplify-tubeboxs-dev-53226-unauthRole",
+      "StackName": "amplify-tubeboxs-dev-53226",
+      "StackId": "arn:aws:cloudformation:us-east-1:242650470567:stack/amplify-tubeboxs-dev-53226/c364ca20-53d4-11f0-8a13-0e4d0ae812b7",
+      "AmplifyAppId": "dlvtx0f09tcbc"
+    },
+    "categories": {
+      "auth": {
+        "tubeboxs8e307649": {}
+      },
+      "storage": {
+        "videoStorage": {}
+      },
+      "api": {
+        "tubeboxs": {}
+      }
+    }
+  }
+}

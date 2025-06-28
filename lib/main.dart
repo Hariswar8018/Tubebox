@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:flutter/foundation.dart';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -6,10 +7,20 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tubebox/firebase_options.dart';
 import 'package:tubebox/home/navigation.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:tubebox/websuport/navigation.dart';
 import 'dart:io';
 
+import 'package:tubebox/websuport/upload.dart';
+final bool isMobile = (defaultTargetPlatform == TargetPlatform.iOS || defaultTargetPlatform == TargetPlatform.android);
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  if(!isMobile){
+    runApp(
+      MyApp(night: false),
+    );
+    return ;
+  }
   unawaited(MobileAds.instance.initialize());
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
@@ -61,14 +72,27 @@ Color greens=Colors.green.withOpacity(0.10);
 
 class _MyHomePageState extends State<MyHomePage> {
   void initState(){
+
     h();
-    Timer(Duration(seconds: 3), () async {
+
+    if(isMobile){
+      Timer(Duration(seconds: 3), () async {
         print("Going...................90");
         Navigator.pushReplacement(
             context,
             MaterialPageRoute(
-                builder: (context) => Navigation(),));
-    });
+              builder: (context) => Navigation(),));
+      });
+    }else{
+      Timer(Duration(seconds: 3), () async {
+        print("Going...................90");
+        Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) => NavigationRails(),));
+      });
+    }
+
 
   }
   h() async {
