@@ -1,0 +1,19 @@
+{
+  "lambdaLayers": [],
+  "permissions": {
+    "storage": {
+      "videoStorage": [
+        "create",
+        "read",
+        "update",
+        "delete"
+      ],
+      "video": [
+        "create",
+        "read",
+        "update",
+        "delete"
+      ]
+    }
+  }
+}

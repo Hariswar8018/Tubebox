@@ -1,1 +1,37 @@
-{"flutter":{"platforms":{"android":{"default":{"projectId":"tubebox-139a9","appId":"1:1088583066892:android:3e425dd8131e493fc1d529","fileOutput":"android/app/google-services.json"}},"dart":{"lib/firebase_options.dart":{"projectId":"tubebox-139a9","configurations":{"android":"1:1088583066892:android:3e425dd8131e493fc1d529","ios":"1:1088583066892:ios:c1cf49700ff47cecc1d529"}}}}}}
+{
+  "flutter": {
+    "platforms": {
+      "android": {
+        "default": {
+          "projectId": "tubebox-139a9",
+          "appId": "1:1088583066892:android:3e425dd8131e493fc1d529",
+          "fileOutput": "android/app/google-services.json"
+        }
+      },
+      "dart": {
+        "lib/firebase_options.dart": {
+          "projectId": "tubebox-139a9",
+          "configurations": {
+            "android": "1:1088583066892:android:3e425dd8131e493fc1d529",
+            "ios": "1:1088583066892:ios:c1cf49700ff47cecc1d529",
+            "web": "1:1088583066892:web:0f3e3eb90d5bc24cc1d529"
+          }
+        }
+      }
+    }
+  },
+  "hosting": {
+    "public": "build/web",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
+    "rewrites": [
+      {
+        "source": "**",
+        "destination": "/index.html"
+      }
+    ]
+  }
+}

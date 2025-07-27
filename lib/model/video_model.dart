@@ -8,6 +8,8 @@ class VideoModel {
   final String s1;
   final bool pin;
 
+  final bool aws;
+
   VideoModel({
     required this.name,
     required this.id,
@@ -17,12 +19,14 @@ class VideoModel {
     required this.sd,
     required this.s1,
     required this.pin,
+    required this.aws,
   });
 
   // Convert JSON to VideoModel
   factory VideoModel.fromJson(Map<String, dynamic> json) {
     return VideoModel(
       name: json['name'] ?? '',
+      aws: json['aws']??true,
       id: json['id'] ?? '',
       pic: json['pic'] ?? '',
       link: json['link'] ?? '',
@@ -40,6 +44,7 @@ class VideoModel {
       'id': id,
       'pic': pic,
       'pin':pin,
+      'aws':aws,
       'link': link,
       'hd': hd,
       'sd': sd,

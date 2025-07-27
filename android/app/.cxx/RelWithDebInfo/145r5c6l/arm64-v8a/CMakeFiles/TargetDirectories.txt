@@ -1,0 +1,2 @@
+C:/Users/haris/StudioProjects/tubebox/android/app/.cxx/RelWithDebInfo/145r5c6l/arm64-v8a/CMakeFiles/edit_cache.dir
+C:/Users/haris/StudioProjects/tubebox/android/app/.cxx/RelWithDebInfo/145r5c6l/arm64-v8a/CMakeFiles/rebuild_cache.dir

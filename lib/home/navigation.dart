@@ -64,6 +64,7 @@ class _NavigationState extends State<Navigation> {
     ) ?? false; // If the dialog is dismissed, return false (stay in the app)
     return exitApp;
   }
+
   @override
   Widget build(BuildContext context) {
     final List<Widget> bottomBarPages = [

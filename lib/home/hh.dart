@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tubebox/admin/all.dart';
@@ -87,7 +86,7 @@ class _JState extends State<J> {
                     padding: const EdgeInsets.symmetric(horizontal: 2.0), // Adds spacing
                     child: ListTile(
                       onTap: (){
-                        loadRewardedAd(context, vi.link);
+                        nowstartprocess(context,vi.link);
                       },
                       leading: Container(
                         width: 90,
@@ -159,56 +158,10 @@ class _JState extends State<J> {
       ),
     );
   }
-   RewardedAd? _rewardedAd;
+
    int _retryCount = 0;
    final int _maxRetries = 4;
-   void loadRewardedAd(BuildContext context,String link) {
-     if (_retryCount >= _maxRetries) {
-       debugPrint("Max retries reached. Could not load ad.");
-       return;
-     }
 
-     RewardedAd.load(
-       adUnitId: Global.rewarded,
-       request: AdRequest(),
-       rewardedAdLoadCallback: RewardedAdLoadCallback(
-         onAdLoaded: (RewardedAd ad) {
-           debugPrint("Rewarded Ad loaded successfully.");
-           _rewardedAd = ad;
-           _retryCount = 0; // Reset retry count on success
-           _showRewardedAd(context,link);
-         },
-         onAdFailedToLoad: (LoadAdError error) {
-           debugPrint("Failed to load Rewarded Ad: ${error.message}");
-           _retryCount++;
-           loadRewardedAd(context,link); // Retry loading
-         },
-       ),
-     );
-   }
-   void _showRewardedAd(BuildContext context,String link) {
-     if (_rewardedAd == null) {
-       debugPrint("No ad available to show.");
-       return;
-     }
-
-     _rewardedAd!.fullScreenContentCallback = FullScreenContentCallback(
-       onAdDismissedFullScreenContent: (RewardedAd ad) {
-         debugPrint("Rewarded Ad dismissed.");
-         ad.dispose();
-         nowstartprocess(context,link); // Call function after watching
-       },
-       onAdFailedToShowFullScreenContent: (RewardedAd ad, AdError error) {
-         debugPrint("Failed to show Rewarded Ad: ${error.message}");
-         ad.dispose();
-         loadRewardedAd(context,link); // Retry loading on failure
-       },
-     );
-
-     _rewardedAd!.show(onUserEarnedReward: (AdWithoutView ad, RewardItem reward) {
-       debugPrint("User earned reward: ${reward.amount} ${reward.type}");
-     });
-   }
    void nowstartprocess(BuildContext context,String link) {
      Navigator.push(
          context, PageTransition(

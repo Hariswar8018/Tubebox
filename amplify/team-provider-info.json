@@ -13,13 +13,21 @@
     },
     "categories": {
       "auth": {
-        "tubeboxs8e307649": {}
+        "tubeboxs8e307649": {},
+        "userPoolGroups": {}
       },
       "storage": {
-        "videoStorage": {}
+        "videoStorage": {},
+        "video": {}
+      },
+      "function": {
+        "myvideo": {
+          "deploymentBucketName": "amplify-tubeboxs-dev-53226-deployment",
+          "s3Key": "amplify-builds/myvideo-77597a6c6d597137576d-build.zip"
+        }
       },
       "api": {
-        "tubeboxs": {}
+        "videos": {}
       }
     }
   }

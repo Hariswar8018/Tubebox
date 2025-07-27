@@ -67,7 +67,7 @@ To comply with laws, consider adding:
 Consult with a lawyer to ensure compliance with applicable laws.
 ''';
 
-  bool admin=false;
+  bool admin=true;
   @override
   Widget build(BuildContext context) {
     double w=MediaQuery.of(context).size.width;

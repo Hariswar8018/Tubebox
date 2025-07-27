@@ -1,7 +1,11 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+
+
+import 'package:amplify_flutter/amplify_flutter.dart';
+import 'package:amplify_storage_s3/amplify_storage_s3.dart';
+import 'package:cloud_firestore/cloud_firestore.dart' as ds;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
+
 import 'package:page_transition/page_transition.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -12,10 +16,10 @@ import 'package:tubebox/settings/video.dart';
 import 'dart:async';
 import 'dart:io';
 import 'package:flutter/services.dart' show PlatformException;
-import 'package:uni_links5/uni_links.dart';
 import 'package:carousel_slider_plus/carousel_slider_plus.dart';
 import 'dart:io';
 
+import 'package:app_links/app_links.dart';
 
 class Home extends StatefulWidget {
  Home({super.key});
@@ -28,7 +32,7 @@ class _HomeState extends State<Home> {
   final CarouselSliderController _controller = CarouselSliderController();
   Future<void> fetchImages() async {
     try {
-      final QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+      final ds.QuerySnapshot querySnapshot = await ds.FirebaseFirestore.instance
           .collection('video')
           .where("pin", isEqualTo: true)
           .get();
@@ -69,11 +73,21 @@ class _HomeState extends State<Home> {
 
   void initState(){
     initUniLinks();
-    _loadAd();
+
   }
+
+  @override
+  void dispose() {
+    videolink = "";      // Resetting state
+    fetching = false;    // Resetting state
+    text.dispose();      // Disposing controller
+    super.dispose();
+  }
+
  Future<void> initUniLinks() async {
    try {
-     final initialLink = await getInitialLink();
+     final appLinks = AppLinks(); // AppLinks is singleton
+     String? initialLink = await appLinks.getInitialLinkString();
      print(initialLink);
      print("XXXXXXXXXXXXX");
      fetchVideoByLink(initialLink!);
@@ -83,10 +97,11 @@ class _HomeState extends State<Home> {
      print(e);
    }
  }
+ String videolink="";
  bool fetching=false;
   void fetchVideoById(String videoId) async {
     try {
-      DocumentSnapshot doc = await FirebaseFirestore.instance
+      ds.DocumentSnapshot doc = await ds.FirebaseFirestore.instance
           .collection("video")
           .doc(videoId)
           .get();
@@ -94,15 +109,62 @@ class _HomeState extends State<Home> {
       if (doc.exists) {
         vi= VideoModel.fromJson(doc.data() as Map<String, dynamic>);
         if(vi.link.isNotEmpty){
-          setState(() {
-            yes=true;
-            fetching=false;
-          });
+          if(vi.aws){
+            print("---------------------------------------------------------------->");
+            print(vi.link);
+            print(vi.toJson());
+                        Global.showMessage(context, "Video Found");
+            try {
+              final urlResult = await Amplify.Storage.getUrl(
+                path: StoragePath.fromString("${vi.link}"),
+                options: const StorageGetUrlOptions(
+                  pluginOptions: S3GetUrlPluginOptions(
+                    expiresIn: Duration(days: 1),
+                    validateObjectExistence: true,
+                    useAccelerateEndpoint: false,
+                  ),
+                ),
+              );
+
+              final getUrlResult = await urlResult.result;
+              final downloadUrl = getUrlResult.url.toString();
+
+              print("🔗 Link Key: ${vi.link}");
+              print("📥 Download URL: $downloadUrl");
+
+              Global.showMessage(context, "Download URL ready!");
+
+
+            Uri uri = Uri.parse(downloadUrl);
+              print(uri.queryParameters.keys.toList());
+              print(
+                  "---------------------------------------------------------------->");
+              setState(() {
+                yes = true;
+                fetching = false;
+                videolink = downloadUrl;
+              });
+              Global.showMessage(context, "AWS one done");
+            }catch(e){
+              Global.showMessage(context, "$e");
+            }
+          }else{
+            setState(() {
+              yes=true;
+              fetching=false;
+              videolink=vi.link;
+            });
+            Global.showMessage(context, "withoutr AWS one done");
+
+          }
+
         }
       } else {
         setState(() {
           fetching=false;
         });
+        Global.showMessage(context, "No video found in $videoId.");
+
         print("No video found with ID: $videoId");
         return null;
       }
@@ -110,6 +172,7 @@ class _HomeState extends State<Home> {
       setState(() {
         fetching=false;
       });
+      Global.showMessage(context, "Error: fetching video  $e");
       print("Error fetching video: $e");
       return null;
     }
@@ -153,32 +216,9 @@ class _HomeState extends State<Home> {
     fetchVideoById(videoId);
 
   }
-  void _loadAd() {
-    final bannerAd = BannerAd(
-      adUnitId:isIOS?"ca-app-pub-2242333705148339/3985786939": Global.bannerid,
-      request: const AdRequest(),
-      listener: BannerAdListener(
-        onAdLoaded: (ad) {
-          if (!mounted) {
-            ad.dispose();
-            return;
-          }
-          setState(() {
-            _bannerAd = ad as BannerAd;
-          });
-        },
-        // Called when an ad request failed.
-        onAdFailedToLoad: (ad, error) {
-          debugPrint('BannerAd failed to load: $error');
-          ad.dispose();
-        },
-      ), size: AdSize.banner,
-    );
-    bannerAd.load();
-  }
-  BannerAd? _bannerAd;
+
   bool yes=false;
-  VideoModel vi=VideoModel(name: "", id: "", pic: "", link: "", hd: false, sd: false, s1: "00:00", pin: false);
+  VideoModel vi=VideoModel(name: "", id: "", pic: "", link: "", hd: false, sd: false, s1: "00:00", pin: false, aws: false);
 
 
 
@@ -197,16 +237,7 @@ class _HomeState extends State<Home> {
           child: Column(
             children: [
               SizedBox(height: 5,),
-              _bannerAd == null
-                  ? SizedBox.shrink()
-                  : Padding(
-                    padding: const EdgeInsets.only(bottom: 9.0),
-                    child: Container(
-                                  width: _bannerAd!.size.width.toDouble(),
-                                  height: _bannerAd!.size.height.toDouble(),
-                                  child: AdWidget(ad: _bannerAd!),
-                                ),
-                  ),
+
               Container(
                 width: w,height:yes?350: 260,
                 child: Stack(
@@ -596,7 +627,7 @@ class _HomeState extends State<Home> {
       ),
     );
   }
-  InterstitialAd? _interstitialAd;
+
 
   Future<void> load(BuildContext context,String link) async {
     nowstartprocess(context, link);
@@ -623,69 +654,24 @@ class _HomeState extends State<Home> {
     setState(() {
       fetching = true;
     });
-    InterstitialAd.load(
-      adUnitId: isIOS?"ca-app-pub-2242333705148339/7063392325":"ca-app-pub-2242333705148339/5805608406",
-      request: AdRequest(),
-      adLoadCallback: InterstitialAdLoadCallback(
-        onAdLoaded: (InterstitialAd ad) {
-          debugPrint("Interstitial Ad loaded successfully.");
-          _interstitialAd = ad;
-          _showInterstitialAd(context, link);
-        },
-        onAdFailedToLoad: (LoadAdError error) {
-          debugPrint("Failed to load Interstitial Ad: ${error.message}");
-          // Call the process directly if ad fails to load
-          setState(() {
-            fetching = false;
-          });
-          nowstartprocess(context, link);
-        },
-      ),
-    );
+
   }
 
-  void _showInterstitialAd(BuildContext context, String link) {
-    if (_interstitialAd == null) {
-      // Call the process directly if ad is not available
-      setState(() {
-        fetching = false;
-      });
-      nowstartprocess(context, link);
-      debugPrint("No Interstitial Ad available to show. Skipping ad.");
-      return;
-    }
 
-    _interstitialAd!.fullScreenContentCallback = FullScreenContentCallback(
-      onAdDismissedFullScreenContent: (InterstitialAd ad) {
-        debugPrint("Interstitial Ad dismissed.");
-        ad.dispose();
-        setState(() {
-          fetching = false;
-        });
-        nowstartprocess(context, link);
-      },
-      onAdFailedToShowFullScreenContent: (InterstitialAd ad, AdError error) {
-        debugPrint("Failed to show Interstitial Ad: ${error.message}");
-        ad.dispose();
-        setState(() {
-          fetching = false;
-        });
-        nowstartprocess(context, link);
-      },
-    );
-
-    _interstitialAd!.show();
-  }
 
   void nowstartprocess(BuildContext context, String link) {
+    print("---------------------------------------------------------------->");
+    print(videolink);
     Navigator.push(
       context,
       PageTransition(
-        child: VideoPlayerScreen(link: link),
+        child: VideoPlayerScreen(link: videolink),
         type: PageTransitionType.rightToLeft,
         duration: Duration(milliseconds: 200),
       ),
     );
+    print("---------------------------------------------------------------->");
+
   }
 
   Future<void> addn(String str) async {

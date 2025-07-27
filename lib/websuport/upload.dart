@@ -1,8 +1,9 @@
+import 'package:amplify_datastore/amplify_datastore.dart';
+import 'package:amplify_flutter/amplify_flutter.dart' show AWSFile, Amplify, StorageException, StorageItem, StoragePath, StorageUploadFileOptions, StorageUploadFileResult, StorageGetUrlOptions;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:share_plus/share_plus.dart';
@@ -15,9 +16,18 @@ import 'package:tubebox/settings/video.dart';
 import 'dart:async';
 import 'dart:io';
 import 'package:flutter/services.dart' show PlatformException;
-import 'package:uni_links5/uni_links.dart';
 import 'package:carousel_slider_plus/carousel_slider_plus.dart';
 import 'dart:io';
+
+import 'dart:io';
+import 'dart:convert'; // for base64Encode and utf8
+import 'dart:io';      // for File and File operations
+import 'package:file_picker/file_picker.dart';
+import 'package:tubebox/websuport/globa.dart';
+import 'package:amplify_storage_s3/amplify_storage_s3.dart';// This includes ModelMutations
+import '../models/Video.dart';
+// this is auto-generated
+
 
 
 class Upload extends StatefulWidget {
@@ -29,6 +39,39 @@ class Upload extends StatefulWidget {
 
 class _UploadState extends State<Upload> {
   String pic="";
+
+
+
+
+  Future<void> uploadVideoToS3(File file) async {
+    final String fileName = file.path.split('/').last;
+    final StoragePath path = StoragePath.fromString('videos/$fileName');
+    final AWSFile awsFile = AWSFile.fromPath(file.path);
+
+    try {
+      final operation = Amplify.Storage.uploadFile(
+        path: path,
+        localFile: awsFile,
+      );
+
+      final StorageUploadFileResult<StorageItem> result = await operation.result;
+      GloablWeb.mess(context, 'Uploaded: ${result}', true);
+    } on StorageException catch (e) {
+      print(e);
+      GloablWeb.mess(context, 'Upload failed: ${e.message}', false);
+    }
+  }
+
+  Future<void> pickAndUpload() async {
+    final result = await FilePicker.platform.pickFiles(type: FileType.video);
+    if (result != null) {
+      final File file = File(result.files.single.path!);
+      uploadVideoToS3(file);
+    } else {
+      GloablWeb.mess(context, 'No file selected.', false);
+    }
+  }
+
 
   pickImage(ImageSource source) async {
     final ImagePicker _imagePicker = ImagePicker();
@@ -45,11 +88,14 @@ class _UploadState extends State<Upload> {
       source: ImageSource.gallery, // or ImageSource.camera
     );
     if (videoFile != null) {
+      GloablWeb.mess(context, "Done", true);
       print('Video selected: ${videoFile.path}');
     } else {
+      GloablWeb.mess(context, "No File Selected", true);
       print('No video selected');
     }
   }
+  double uploadProgress = 0.0;
   @override
   Widget build(BuildContext context) {
     double w=MediaQuery.of(context).size.width;
@@ -73,13 +119,76 @@ class _UploadState extends State<Upload> {
               children:[
                 InkWell(
                   onTap: () async {
-                    final XFile? videoFile = await _picker.pickVideo(
-                      source: ImageSource.gallery, // or ImageSource.camera
-                    );
-                    if (videoFile != null) {
-                      print('Video selected: ${videoFile.path}');
-                    } else {
-                      print('No video selected');
+                    try {
+                      setState(() {
+                        on = true;
+                      });
+
+                      final picker = ImagePicker();
+                      final XFile? file = await picker.pickVideo(
+                          source: ImageSource.gallery);
+                      if (file == null) {
+                        Global.showMessage(context, "No file selected");
+                        setState(() => on = false);
+                        return;
+                      }
+
+                      final File imageFile = File(
+                          file.path); // Convert XFile to File
+                      final String fileName = 'videos/${DateTime
+                          .now()
+                          .millisecondsSinceEpoch}_${file.name}';
+                      final awsFile = AWSFile.fromPath(file.path);
+
+                      // Upload the file
+                      final uploadResult = await Amplify.Storage
+                          .uploadFile(
+                        localFile: awsFile,
+                        path: StoragePath.fromString(fileName),
+                        options: const StorageUploadFileOptions(
+
+                        ),
+                        onProgress: (progress) {
+                          final fractionCompleted =
+                              progress.transferredBytes / progress.totalBytes;
+                          setState(() {
+                            uploadProgress = fractionCompleted;
+                          });
+                          print("Progress: ${(fractionCompleted * 100).toStringAsFixed(2)}%");
+                        },
+                      ).result;
+                      print('✅ Uploaded file key: ${uploadResult.uploadedItem
+                          .path}');
+
+                      // Get the file's public URL
+
+                      print("HHHH-------------->");
+                      print(uploadResult.uploadedItem.path);
+                      print(uploadResult.uploadedItem.size);
+                      print(uploadResult.uploadedItem.metadata);
+                      print(uploadResult.uploadedItem.eTag);
+
+                      print(uploadResult);
+                      print("✅ Uploaded file key: ${uploadResult.uploadedItem
+                          .path}");
+                      print("📦 File size: ${uploadResult.uploadedItem.size}");
+                      print("🧾 Metadata: ${uploadResult.uploadedItem.metadata}");
+                      print("🆔 ETag: ${uploadResult.uploadedItem.eTag}");
+
+                      final downloadUrl = uploadResult.uploadedItem.path;
+
+                      print("🌐 Download URL: $downloadUrl");
+                      setState(() {
+                        link.text = downloadUrl;
+                        on = false;
+                        aws=true;
+                      });
+
+                      Global.showMessage(context, "Upload complete ✅");
+                    } catch (e) {
+                      setState(() => on = false);
+                      Global.showMessage(context, "Upload failed: $e");
+                      print("❌ Error: $e");
                     }
                   },
                   child: Column(
@@ -95,7 +204,7 @@ class _UploadState extends State<Upload> {
                           )
                         ),
                         height: 200,width: 200,
-                        child: Icon(Icons.upload,size: 90,),
+                        child: link.text.isEmpty?Icon(Icons.upload,size: 90,):Icon(Icons.verified_rounded,color: Colors.green,size:90,),
                       ),
                       SizedBox(height: 10,),
                       Text("Upload Video from PC",style: TextStyle(fontSize: 21,fontWeight: FontWeight.w800),)
@@ -116,6 +225,13 @@ class _UploadState extends State<Upload> {
               padding: const EdgeInsets.all(20.0),
               child: Column(
                 children: [
+                  uploadProgress > 0 && uploadProgress < 1
+                      ? LinearProgressIndicator(value: uploadProgress)
+                      : SizedBox.shrink(),
+                  uploadProgress > 0 && uploadProgress < 1
+                      ? Text("${(uploadProgress*100).toInt()} % Upload",style: TextStyle(fontSize: 18,color: Colors.green),)
+                      : SizedBox.shrink(),
+                  SizedBox(height: 8,),
                   pic.isNotEmpty?Container(
                     width: 240,
                     height: 120,
@@ -128,22 +244,81 @@ class _UploadState extends State<Upload> {
                       onTap: () async {
                         try {
                           setState(() {
-                            on=true;
+                            on = true;
                           });
-                          Uint8List? _file = await pickImage(
-                              ImageSource.gallery);
-                          Global.showMessage(context, "Uploading...............");
-                          String photoUrl = "done";
+
+                          final picker = ImagePicker();
+                          final XFile? file = await picker.pickImage(
+                              source: ImageSource.gallery);
+
+                          if (file == null) {
+                            Global.showMessage(context, "No file selected");
+                            setState(() => on = false);
+                            return;
+                          }
+
+                          final File imageFile = File(
+                              file.path); // Convert XFile to File
+                          final String fileName = 'pictures/${DateTime
+                              .now()
+                              .millisecondsSinceEpoch}_${file.name}';
+                          final awsFile = AWSFile.fromPath(file.path);
+
+                          // Upload the file
+                          final uploadResult = await Amplify.Storage
+                              .uploadFile(
+                            localFile: awsFile,
+                            path: StoragePath.fromString(fileName),
+                            options: const StorageUploadFileOptions(
+                              // or authenticated
+                            ),
+                            onProgress: (progress) {
+                              final fractionCompleted =
+                                  progress.transferredBytes / progress.totalBytes;
+                              setState(() {
+                                uploadProgress = fractionCompleted;
+                              });
+                              print("Progress: ${(fractionCompleted * 100).toStringAsFixed(2)}%");
+                            },
+                          )
+                              .result;
+
+                          print('✅ Uploaded file key: ${uploadResult.uploadedItem
+                              .path}');
+
+                          // Get the file's public URL
+                          final urlResult = await Amplify.Storage.getUrl(
+                            path: StoragePath.fromString(
+                                uploadResult.uploadedItem.path),
+                          );
+                          print("HHHH-------------->");
+                          print(uploadResult.uploadedItem.path);
+                          print(uploadResult.uploadedItem.size);
+                          print(uploadResult.uploadedItem.metadata);
+                          print(uploadResult.uploadedItem.eTag);
+
+                          print(urlResult.result);
+                          print(urlResult.result.toString());
+                          print(uploadResult);
+                          print("✅ Uploaded file key: ${uploadResult.uploadedItem
+                              .path}");
+                          print("📦 File size: ${uploadResult.uploadedItem.size}");
+                          print("🧾 Metadata: ${uploadResult.uploadedItem.metadata}");
+                          print("🆔 ETag: ${uploadResult.uploadedItem.eTag}");
+                          final getUrlResult = await urlResult.result;
+                          final downloadUrl = getUrlResult.url.toString();
+
+                          print("🌐 Download URL: $downloadUrl");
                           setState(() {
-                            pic=photoUrl;
-                            on=false;
+                            pic = downloadUrl;
+                            on = false;
                           });
-                          Global.showMessage(context, "Uploaded");
-                        }catch(e){
-                          setState(() {
-                            on=false;
-                          });
-                          Global.showMessage(context, "$e");
+
+                          Global.showMessage(context, "Upload complete ✅");
+                        } catch (e) {
+                          setState(() => on = false);
+                          Global.showMessage(context, "Upload failed: $e");
+                          print("❌ Error: $e");
                         }
                       },
                       leading: Icon(Icons.add),
@@ -192,8 +367,6 @@ class _UploadState extends State<Upload> {
                       ),
                     ],
                   ),
-
-
                   Spacer(),
                   done&&mine.isNotEmpty?InkWell(
                     onTap: (){
@@ -205,7 +378,7 @@ class _UploadState extends State<Upload> {
                       children: [
                         Center(
                           child: Container(
-                            width: w-90,
+                            width: w/2-150,
                             height: 50,
                             decoration: BoxDecoration(
                                 color: Color(0xff009788),
@@ -233,23 +406,35 @@ class _UploadState extends State<Upload> {
                   ):(on?Center(child: CircularProgressIndicator()):InkWell(
                     onTap: () async {
                       setState(() {
-                        on=true;
+                        on = true;
                       });
-                      try{
+                      try {
+                        print("1");
                         String id=DateTime.now().microsecondsSinceEpoch.toString();
-                        VideoModel vi=VideoModel(name: name.text, id: id, pic: pic, link: link.text, hd: hd, sd: sd, s1: s1.text, pin: false);
-                        await FirebaseFirestore.instance.collection("video").doc(id).set(vi.toJson());
+                        VideoModel video=VideoModel(
+                          aws:true,
+                            name: name.text, id: id, pic: pic, link: link.text, hd: hd, sd: sd, s1: "", pin:false
+                        );
+                        print("2");
+                        await FirebaseFirestore.instance.collection("video").doc(id).set(video.toJson());
+                        print("4");
                         setState(() {
-                          on=false;
                           done=true;
-                          mine=id;
+                          mine="${id}";
                         });
-                      }catch(e){
-                        Global.showMessage(context, "$e");
+                        print("3");
+                      } on FirebaseException catch (e) {
+                        print('❌ Firebase error [${e.code}]: ${e.message}');
+                        Global.showMessage(context, "Firebase error: ${e.message}");
+                      } catch (e) {
+                        print('❌ General error: $e');
+                        Global.showMessage(context, "Unexpected error occurred.");
+                      }finally {
                         setState(() {
-                          on=false;
+                          on = false;
                         });
                       }
+
                     },
                     child: Center(
                       child: Container(
@@ -271,6 +456,7 @@ class _UploadState extends State<Upload> {
     ),
     ));
   }
+  bool aws = false;
   String mine="";bool done=false;
   bool hd=false,sd=false;
   TextEditingController link=TextEditingController();
@@ -309,3 +495,5 @@ class _UploadState extends State<Upload> {
     );
   }
 }
+
+

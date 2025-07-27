@@ -58,21 +58,37 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
   }
   int aspectRatioIndex = 0;
   Future<void> _initializePlayer() async {
-    _videoController = VideoPlayerController.network(widget.link);
-    await _videoController.initialize();
+    try {
+      _videoController = VideoPlayerController.network(widget.link);
+      await _videoController.initialize();
 
-    _chewieController = ChewieController(
-      videoPlayerController: _videoController,
-      autoPlay: true,
-      looping:true,
-      allowFullScreen: true,playbackSpeeds: [1.0,1.5,1.25,1.75,2.0,0.75,0.5],
-      showControls: false,
-    );
+      _chewieController = ChewieController(
+        videoPlayerController: _videoController,
+        autoPlay: true,
+        looping: true,
+        allowFullScreen: true,
+        playbackSpeeds: [1.0, 1.5, 1.25, 1.75, 2.0, 0.75, 0.5],
+        showControls: false,
+      );
 
-    brightness = await ScreenBrightness().current;
-    volume = (await FlutterVolumeController.getVolume())!;
+      brightness = await ScreenBrightness().current;
+      volume = (await FlutterVolumeController.getVolume())!;
 
-    setState(() {});
+      setState(() {});
+    }catch(e){
+      Navigator.pop(context);
+      ScaffoldMessenger.of(context).showSnackBar(
+           SnackBar(
+            content: Text('$e'),duration: Duration(seconds: 8),
+            action: SnackBarAction(
+              onPressed: () {
+
+              },
+              label: 'Close',
+            ),
+          ),
+      );
+    }
   }
 
   @override

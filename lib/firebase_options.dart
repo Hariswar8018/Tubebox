@@ -17,10 +17,7 @@ import 'package:flutter/foundation.dart'
 class DefaultFirebaseOptions {
   static FirebaseOptions get currentPlatform {
     if (kIsWeb) {
-      throw UnsupportedError(
-        'DefaultFirebaseOptions have not been configured for web - '
-        'you can reconfigure this by running the FlutterFire CLI again.',
-      );
+      return web;
     }
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
@@ -66,6 +63,17 @@ class DefaultFirebaseOptions {
     databaseURL: 'https://tubebox-139a9-default-rtdb.asia-southeast1.firebasedatabase.app',
     storageBucket: 'tubebox-139a9.appspot.com',
     iosBundleId: 'com.tube.box.entertainment.app',
+  );
+
+  static const FirebaseOptions web = FirebaseOptions(
+    apiKey: 'AIzaSyD6M8hYDW7YCmgJdNki7bWkLa6hQ3QKCGc',
+    appId: '1:1088583066892:web:0f3e3eb90d5bc24cc1d529',
+    messagingSenderId: '1088583066892',
+    projectId: 'tubebox-139a9',
+    authDomain: 'tubebox-139a9.firebaseapp.com',
+    databaseURL: 'https://tubebox-139a9-default-rtdb.asia-southeast1.firebasedatabase.app',
+    storageBucket: 'tubebox-139a9.appspot.com',
+    measurementId: 'G-XRMRXP1GY3',
   );
 
 }

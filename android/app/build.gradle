@@ -16,16 +16,16 @@ if (keystorePropertiesFile.exists()) {
 
 android {
     namespace = "com.tube.box.entertainment.app"
-    compileSdk = 34
+    compileSdk = 35
     ndkVersion = flutter.ndkVersion
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_7
-        targetCompatibility = JavaVersion.VERSION_1_7
+        sourceCompatibility JavaVersion.VERSION_18
+        targetCompatibility JavaVersion.VERSION_18
+        coreLibraryDesugaringEnabled true
     }
-
     kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_1_7
+        jvmTarget = '18'  // Update from 1.7 to 17
     }
 
     defaultConfig {
@@ -34,9 +34,9 @@ android {
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
         minSdk = 25
-        targetSdk = 34
-        versionCode = 7
-        versionName = "2.6"
+        targetSdk = 35
+        versionCode = 9
+        versionName = "3.0.1"
     }
 
     signingConfigs {
@@ -51,8 +51,8 @@ android {
     buildTypes {
         release {
             signingConfig signingConfigs.release
-            shrinkResources true
-            minifyEnabled true // You can set this to true if you want to shrink the code
+            shrinkResources false
+            minifyEnabled false // You can set this to true if you want to shrink the code
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
@@ -60,4 +60,7 @@ android {
 
 flutter {
     source = "../.."
+}
+dependencies {
+    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.0.3'
 }
