@@ -24,10 +24,36 @@
         "myvideo": {
           "deploymentBucketName": "amplify-tubeboxs-dev-53226-deployment",
           "s3Key": "amplify-builds/myvideo-77597a6c6d597137576d-build.zip"
-        }
+        },
+        "videoStorage": {},
+        "video": {}
       },
       "api": {
         "videos": {}
+      }
+    }
+  },
+  "asiaserve": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-tubeboxs-asiaserve-605e5-authRole",
+      "UnauthRoleArn": "arn:aws:iam::242650470567:role/amplify-tubeboxs-asiaserve-605e5-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::242650470567:role/amplify-tubeboxs-asiaserve-605e5-authRole",
+      "Region": "us-east-1",
+      "DeploymentBucketName": "amplify-tubeboxs-asiaserve-605e5-deployment",
+      "UnauthRoleName": "amplify-tubeboxs-asiaserve-605e5-unauthRole",
+      "StackName": "amplify-tubeboxs-asiaserve-605e5",
+      "StackId": "arn:aws:cloudformation:us-east-1:242650470567:stack/amplify-tubeboxs-asiaserve-605e5/b9c8c7a0-6d06-11f0-a65a-120a91b7e49d",
+      "AmplifyAppId": "dlvtx0f09tcbc"
+    },
+    "categories": {
+      "auth": {
+        "tubeboxs8e307649": {},
+        "userPoolGroups": {}
+      },
+      "function": {
+        "myvideo": {},
+        "videoStorage": {},
+        "video": {}
       }
     }
   }

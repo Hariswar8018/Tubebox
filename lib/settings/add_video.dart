@@ -35,95 +35,6 @@ class AddVideo extends StatefulWidget {
 class _AddVideoState extends State<AddVideo> {
   String pic = "";
 
-  void initState() {
-    signin();
-  }
-
-  dh() async {
-    try {
-      final result = await Amplify.Storage
-          .downloadData(
-        path: const StoragePath.fromString('album/2024/1.jpg'),
-        options: StorageDownloadDataOptions(
-          // Specify a target bucket using name assigned in Amplify Backend
-          bucket: StorageBucket.fromOutputs('secondBucket'),
-        ),
-      )
-          .result;
-      print(result);
-    } on Exception catch (e) {
-      print('Error: $e');
-    }
-  }
-
-  ki() async {
-    try {
-      final result = await Amplify.Storage
-          .downloadData(
-        path: const StoragePath.fromString('album/2024/1.jpg'),
-        options: const StorageDownloadDataOptions(
-          // Alternatively, provide bucket name from console and associated region
-          bucket: StorageBucket.fromBucketInfo(
-            BucketInfo(
-              bucketName: 'second-bucket-name-from-console',
-              region: 'us-east-2',
-            ),
-          ),
-        ),
-      )
-          .result;
-      print(result);
-    } on Exception catch (e) {
-      print('Error: $e');
-    }
-  }
-
-
-  Future<void> uploadFile(File file) async {
-    print("---------------------.");
-    try {
-      final result = await Amplify.Storage
-          .uploadFile(
-        localFile: AWSFilePlatform.fromFile(file),
-        path: const StoragePath.fromString('picture-submissions/myPhoto.png'),
-      )
-          .result;
-      safePrint('Uploaded file: ${result.uploadedItem.path}');
-    } on StorageException catch (e) {
-      safePrint(e.message);
-    }
-  }
-
-  signin() async {
-    try {
-      final user = await Amplify.Auth.getCurrentUser();
-      print("Signed in as: ${user.username}");
-    } catch (e) {
-      print("User not signed in: $e");
-    }
-
-    try {
-      final session = await Amplify.Auth.fetchAuthSession();
-      if (session.isSignedIn) {
-        print("✅ User already signed in");
-        return;
-      } else {
-        Global.showMessage(context, "Signing you In.....Please wait");
-        final res = await Amplify.Auth.signIn(
-          username: "hariswarsamasi@gmail.com",
-          password: "12345678",
-        );
-        if (res.isSignedIn) {
-          Global.showMessage(context, "Signed In");
-        } else {
-          Global.showMessage(context, "Error");
-        }
-        print("🔒 User not signed in");
-      }
-    } catch (e) {
-      Global.showMessage(context, "Error: $e");
-    }
-  }
 
   pickImage(ImageSource source) async {
     final ImagePicker _imagePicker = ImagePicker();
@@ -155,12 +66,12 @@ class _AddVideoState extends State<AddVideo> {
             uploadProgress > 0 && uploadProgress < 1
                 ? LinearProgressIndicator(value: uploadProgress)
                 : SizedBox.shrink(),
-            pic.isNotEmpty ? Container(
+            pic1.isNotEmpty ? Container(
               width: 240,
               height: 120,
               decoration: BoxDecoration(
                   image: DecorationImage(
-                      image: NetworkImage(pic), fit: BoxFit.cover)
+                      image: NetworkImage(pic1), fit: BoxFit.cover)
               ),
             ) : Padding(
               padding: const EdgeInsets.all(18.0),
@@ -170,11 +81,8 @@ class _AddVideoState extends State<AddVideo> {
                     setState(() {
                       on = true;
                     });
-
                     final picker = ImagePicker();
-                    final XFile? file = await picker.pickImage(
-                        source: ImageSource.gallery);
-
+                    final XFile? file = await picker.pickImage(source: ImageSource.gallery);
                     if (file == null) {
                       Global.showMessage(context, "No file selected");
                       setState(() => on = false);
@@ -183,7 +91,7 @@ class _AddVideoState extends State<AddVideo> {
 
                     final File imageFile = File(
                         file.path); // Convert XFile to File
-                    final String fileName = 'pictures/${DateTime
+                    final String fileName = 'public/${DateTime
                         .now()
                         .millisecondsSinceEpoch}_${file.name}';
                     final awsFile = AWSFile.fromPath(file.path);
@@ -206,10 +114,8 @@ class _AddVideoState extends State<AddVideo> {
                       },
                     )
                         .result;
-
                     print('✅ Uploaded file key: ${uploadResult.uploadedItem
                         .path}');
-
                     // Get the file's public URL
                     final urlResult = await Amplify.Storage.getUrl(
                       path: StoragePath.fromString(
@@ -229,13 +135,13 @@ class _AddVideoState extends State<AddVideo> {
                     print("📦 File size: ${uploadResult.uploadedItem.size}");
                     print("🧾 Metadata: ${uploadResult.uploadedItem.metadata}");
                     print("🆔 ETag: ${uploadResult.uploadedItem.eTag}");
+                    final downloadUrl = uploadResult.uploadedItem.path;
 
-// 👇 Correct: Await and get the result of getUrl operation
-                    final getUrlResult = await urlResult.result;
-                    final downloadUrl = getUrlResult.url.toString();
-
+                    final getUrlResult1 = await urlResult.result;
+                    final downloadUrl1 = getUrlResult1.url.toString();
                     print("🌐 Download URL: $downloadUrl");
                     setState(() {
+                      pic1=downloadUrl1;
                       pic = downloadUrl;
                       on = false;
                       aws = true;
@@ -459,6 +365,8 @@ class _AddVideoState extends State<AddVideo> {
       ],
     );
   }
+
+  String pic1="";
 
   Future<void> _uploadDummyVideo() async {
     final mutation = '''

@@ -82,60 +82,7 @@ class _JState extends State<J> {
                 itemCount: stories.length,
                 itemBuilder: (context, index) {
                   VideoModel vi = stories[index];
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 2.0), // Adds spacing
-                    child: ListTile(
-                      onTap: (){
-                        nowstartprocess(context,vi.link);
-                      },
-                      leading: Container(
-                        width: 90,
-                        height: 60,
-                        decoration: BoxDecoration(
-                            image: DecorationImage(image: NetworkImage(vi.pic),fit: BoxFit.cover)
-                        ),
-                      ),
-                      title: Text(vi.name,style: TextStyle(fontWeight: FontWeight.w800,height: 1.1,color: !isnight?Colors.black:Colors.white,),maxLines: 2),
-                      subtitle: Row(
-                        children: [
-                          vi.sd?Padding(
-                            padding: const EdgeInsets.only(right: 8.0),
-                            child: Container(
-                                color: Color(0xff009788),
-                                child: Padding(
-                                  padding: const EdgeInsets.only(left: 8,right: 8,top: 3.0,bottom: 3),
-                                  child: Text("SD",style: TextStyle(color: Colors.white,fontSize: 12),),
-                                )),
-                          ):SizedBox(),
-                          vi.hd?Padding(
-                            padding: const EdgeInsets.only(right: 8.0),
-                            child: Container(
-                                color: Color(0xff009788),
-                                child: Padding(
-                                  padding: const EdgeInsets.only(left: 8,right: 8,top: 3.0,bottom: 3),
-                                  child: Text("HD",style: TextStyle(color: Colors.white,fontSize: 12),),
-                                )),
-                          ):SizedBox(),
-                          Text(vi.s1,style: TextStyle(fontWeight: FontWeight.w500,color: Colors.grey),),
-                        ],
-                      ),
-                      trailing: Container(
-                        width: 90,
-                        height: 45,
-                        decoration: BoxDecoration(
-                            color: Color(0xff009788),
-                            borderRadius: BorderRadius.circular(5)
-                        ),
-                        child: Center(child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(Icons.play_arrow,color: Colors.white,size: 20,),
-                            Text("Watch",style: TextStyle(color: Colors.white,fontSize: 13),),
-                          ],
-                        )),
-                      ),
-                    ),
-                  );
+                  return EachCard(vi: vi, admin: false);
                 },
               );
           }

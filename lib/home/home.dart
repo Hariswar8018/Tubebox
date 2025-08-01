@@ -99,13 +99,48 @@ class _HomeState extends State<Home> {
  }
  String videolink="";
  bool fetching=false;
+
+ String picresult="";
+
+ void clear(){
+   picresult="";
+   fetching=false;
+   videolink="";
+   text.text="";
+   yes=false;
+ }
+
+ Future<void> picresulttoo(String piclink) async {
+   try {
+     final urlResult1 = await Amplify.Storage.getUrl(
+       path: StoragePath.fromString(piclink),
+       options: const StorageGetUrlOptions(
+         pluginOptions: S3GetUrlPluginOptions(
+           expiresIn: Duration(days: 1),
+           validateObjectExistence: true,
+           useAccelerateEndpoint: false,
+         ),
+       ),
+     );
+
+     final getUrlResult = await urlResult1.result;
+     final downloadUrl = getUrlResult.url.toString();
+
+     print("🔗 Link Key: ${vi.link}");
+     print("📥 Download URL: $downloadUrl");
+     setState(() {
+       picresult=downloadUrl;
+     });
+   }catch(e){
+
+   }
+ }
   void fetchVideoById(String videoId) async {
     try {
       ds.DocumentSnapshot doc = await ds.FirebaseFirestore.instance
           .collection("video")
           .doc(videoId)
           .get();
-
       if (doc.exists) {
         vi= VideoModel.fromJson(doc.data() as Map<String, dynamic>);
         if(vi.link.isNotEmpty){
@@ -113,8 +148,8 @@ class _HomeState extends State<Home> {
             print("---------------------------------------------------------------->");
             print(vi.link);
             print(vi.toJson());
-                        Global.showMessage(context, "Video Found");
             try {
+              picresulttoo(vi.pic);
               final urlResult = await Amplify.Storage.getUrl(
                 path: StoragePath.fromString("${vi.link}"),
                 options: const StorageGetUrlOptions(
@@ -131,21 +166,19 @@ class _HomeState extends State<Home> {
 
               print("🔗 Link Key: ${vi.link}");
               print("📥 Download URL: $downloadUrl");
-
-              Global.showMessage(context, "Download URL ready!");
-
-
-            Uri uri = Uri.parse(downloadUrl);
+              Uri uri = Uri.parse(downloadUrl);
               print(uri.queryParameters.keys.toList());
-              print(
-                  "---------------------------------------------------------------->");
+              print("---------------------------------------------------------------->");
               setState(() {
                 yes = true;
                 fetching = false;
                 videolink = downloadUrl;
               });
-              Global.showMessage(context, "AWS one done");
             }catch(e){
+              setState(() {
+                fetching=false;
+                yes=false;
+              });
               Global.showMessage(context, "$e");
             }
           }else{
@@ -154,7 +187,6 @@ class _HomeState extends State<Home> {
               fetching=false;
               videolink=vi.link;
             });
-            Global.showMessage(context, "withoutr AWS one done");
 
           }
 
@@ -220,8 +252,6 @@ class _HomeState extends State<Home> {
   bool yes=false;
   VideoModel vi=VideoModel(name: "", id: "", pic: "", link: "", hd: false, sd: false, s1: "00:00", pin: false, aws: false);
 
-
-
   bool get isIOS {
     return Platform.isIOS;
   }
@@ -237,7 +267,6 @@ class _HomeState extends State<Home> {
           child: Column(
             children: [
               SizedBox(height: 5,),
-
               Container(
                 width: w,height:yes?350: 260,
                 child: Stack(
@@ -299,9 +328,20 @@ class _HomeState extends State<Home> {
                             ),
                             yes?Center(
                               child: Padding(
-                                padding: const EdgeInsets.only(bottom: 9.0,left: 9,right: 9),
-                                child: Card(
-                                  color:Colors.white,
+                                padding: const EdgeInsets.only(bottom: 14.0,left: 14,right: 14),
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    color:Colors.white,
+                                    borderRadius: BorderRadius.circular(5),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.black.withOpacity(0.1), // Shadow color
+                                        spreadRadius: 2, // How wide the shadow spreads
+                                        blurRadius: 5,   // How blurry the shadow is
+                                        offset: Offset(0, 3), // X and Y offset
+                                      ),
+                                    ],
+                                  ),
                                   child: ListTile(
                                     onTap: (){
                                       addn(vi.id);
@@ -311,7 +351,7 @@ class _HomeState extends State<Home> {
                                       width: 90,
                                       height: 60,
                                       decoration: BoxDecoration(
-                                        image: DecorationImage(image: NetworkImage(vi.pic),fit: BoxFit.cover)
+                                        image: DecorationImage(image: NetworkImage(picresult.isNotEmpty?picresult:vi.pic),fit: BoxFit.cover)
                                       ),
                                     ),
                                     title: Text(vi.name,style: TextStyle(fontWeight: FontWeight.w800),maxLines: 2,),
@@ -342,7 +382,65 @@ class _HomeState extends State<Home> {
                                 ),
                               ),
                             ):SizedBox(),
-                            Center(
+                            vi.id.isNotEmpty?Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                fetching?SizedBox():InkWell(
+                                    onTap: (){
+                                      fetchVideoByLink(text.text);
+                                    },
+                                    child:Container(
+                                      width: w/2-40,
+                                      height: 50,
+                                      decoration: BoxDecoration(
+                                          color: Color(0xff009788),
+                                          borderRadius: BorderRadius.circular(5)
+                                      ),
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: [
+                                          Icon(Icons.refresh,color: Colors.white,),
+                                          Text(" Fetch Again",style: TextStyle(color: Colors.white,fontSize: 16),),
+                                        ],
+                                      ),
+                                    ),
+                                ),
+                                SizedBox(width: 10,),
+                                InkWell(
+                                    onTap: (){
+                                      if(vi.id.isNotEmpty){
+                                        addn(vi.id);
+                                        load(context, vi.link);
+                                      }
+                                      if(text.text.isEmpty){
+                                        return ;
+                                      }
+                                      setState(() {
+                                        fetching=true;
+                                      });
+                                      fetchVideoByLink(text.text);
+                                    },
+                                    child:fetching?CircularProgressIndicator(
+                                      backgroundColor: Color(0xff009788),
+                                    ):Container(
+                                      width: w/2-40,
+                                      height: 50,
+                                      decoration: BoxDecoration(
+                                          color: Color(0xff009788),
+                                          borderRadius: BorderRadius.circular(5)
+                                      ),
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: [
+                                          Icon(Icons.play_circle,color: Colors.white,),
+                                          Text(" Play Video",style: TextStyle(color: Colors.white,fontSize: 16),),
+                                        ],
+                                      ),
+                                    ),
+                                ),
+
+                              ],
+                            ):Center(
                               child: InkWell(
                                 onTap: (){
                                   if(vi.id.isNotEmpty){
@@ -362,15 +460,7 @@ class _HomeState extends State<Home> {
                                 ):CircleAvatar(
                                   backgroundColor: gree,
                                   child: Icon(Icons.arrow_forward_outlined,color: Colors.white,),
-                                ) /*Container(
-                                  width: w-60,
-                                  height: 50,
-                                  decoration: BoxDecoration(
-                                    color: Color(0xff009788),
-                                    borderRadius: BorderRadius.circular(5)
-                                  ),
-                                  child: Center(child: Text(yes?"Fetch Again":"Continue",style: TextStyle(color: Colors.white,fontSize: 18),)),
-                                ),*/
+                                )
                               ),
                             )
                           ],
@@ -685,4 +775,20 @@ class _HomeState extends State<Home> {
     }
   }
   TextEditingController text=TextEditingController();
+}
+
+
+class Home1 extends StatelessWidget {
+  const Home1({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        automaticallyImplyLeading: true,
+        title: const Text("Test Videos", style: TextStyle(color: Colors.black)),
+      ),
+      body: Home(),
+    );
+  }
 }

@@ -1,7 +1,9 @@
+import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:tubebox/admin/login.dart';
 import 'package:tubebox/history.dart';
 import 'package:tubebox/home/hh.dart';
 import 'package:tubebox/home/home.dart';
@@ -32,7 +34,34 @@ class _NavigationState extends State<Navigation> {
 
   /// Controller to handle bottom nav bar and also handles initial page
   final NotchBottomBarController _controller = NotchBottomBarController(index: 0);
+  signin() async {
+    try {
+      final user = await Amplify.Auth.getCurrentUser();
+      print("Signed in as: ${user.username}");
+    } catch (e) {
+      print("User not signed in: $e");
+    }
 
+    try {
+      final session = await Amplify.Auth.fetchAuthSession();
+      if (session.isSignedIn) {
+        setState(() {
+          admin=true;
+        });
+        return;
+      } else {
+        print("🔒 User not signed in");
+      }
+    } catch (e) {
+
+    }
+  }
+
+  void initState(){
+    signin();
+  }
+
+  bool admin = false;
   int maxCount = 5;
 
   @override
@@ -72,11 +101,36 @@ class _NavigationState extends State<Navigation> {
     J(),
     Profile(),
     ];
-    return Scaffold(
+    return admin?Scaffold(
+        appBar: AppBar(
+          backgroundColor: isnight?Colors.black:greens,
+          centerTitle: true,
+          actions: [
+            Padding(
+              padding: const EdgeInsets.all(8),
+              child: InkWell(
+                onTap: () async {
+                  await Amplify.Auth.signOut();
+                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (_)=> MyApp(night: false)));
+                },
+                child: CircleAvatar(
+                  backgroundColor: Colors.white,
+                  child: Icon(Icons.login,color: Colors.red,),
+                ),
+              ),
+            ),
+          ],
+          title: Text("Admin Panel",style: TextStyle(fontSize: 24,color: isnight?Colors.white:Colors.black),),
+        ),
+        body: Profile(admin: true,)):Scaffold(
       appBar: AppBar(
         backgroundColor: isnight?Colors.black:greens,
         centerTitle: true,
-        leading: Image.asset("assets/logos.png"),
+        leading: InkWell(
+            onLongPress: (){
+              Navigator.push(context, MaterialPageRoute(builder: (_)=>Login(),));
+            },
+            child: Image.asset("assets/logos.png")),
         title: Text(_currentIndex==0?"TubeBox":_currentIndex==1?"History":"Privacy Policy",style: TextStyle(fontSize: 24,color: isnight?Colors.white:Colors.black),),
         automaticallyImplyLeading: false,
         actions: [
@@ -107,7 +161,7 @@ class _NavigationState extends State<Navigation> {
       ),
       backgroundColor:  isnight?Colors.black:bgcolor,
       extendBodyBehindAppBar: true,
-      body: PageView(
+      body:PageView(
         controller: _pageController,
         physics: const NeverScrollableScrollPhysics(),
         children: List.generate(bottomBarPages.length, (index) => bottomBarPages[index]),
@@ -160,7 +214,7 @@ class _NavigationState extends State<Navigation> {
               Icons.privacy_tip_outlined,
               color: isnight?Colors.black:bgcolor
             ),
-            itemLabel: 'History',
+            itemLabel: 'Privacy',
           ),
         ],
         onTap: (index) {

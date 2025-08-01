@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:tubebox/admin/all.dart';
+import 'package:tubebox/home/home.dart';
 import 'package:tubebox/main.dart';
 import 'package:tubebox/settings/add_video.dart';
 
 class Profile extends StatelessWidget {
- Profile({super.key});
+ Profile({super.key, this.admin=false});
 
   final String privacyPolicy = '''
 Privacy Policy
@@ -67,7 +68,7 @@ To comply with laws, consider adding:
 Consult with a lawyer to ensure compliance with applicable laws.
 ''';
 
-  bool admin=true;
+  bool admin;
   @override
   Widget build(BuildContext context) {
     double w=MediaQuery.of(context).size.width;
@@ -86,7 +87,7 @@ Consult with a lawyer to ensure compliance with applicable laws.
                       child: AddVideo(), type: PageTransitionType.rightToLeft, duration: Duration(milliseconds: 200)
                   ));
                 },
-                child: Center(child: StripedBorderContainer(width: w-30, height: h/3-20, str: 'Add Video', h: Icon(Icons.add),))),
+                child: Center(child: StripedBorderContainer(width: w-30, height: h/4-20, str: 'Add Video', h: Icon(Icons.add),))),
             SizedBox(height: 50,),InkWell(
                 onTap: (){
                   Navigator.push(
@@ -94,7 +95,16 @@ Consult with a lawyer to ensure compliance with applicable laws.
                       child: All_Videos(), type: PageTransitionType.rightToLeft, duration: Duration(milliseconds: 200)
                   ));
                 },
-                child: Center(child: StripedBorderContainer(width: w-30, height: h/3-20, str: 'See Video', h: Icon(Icons.remove_red_eye),))),
+                child: Center(child: StripedBorderContainer(width: w-30, height: h/4-20, str: 'See Video', h: Icon(Icons.remove_red_eye),))),
+            SizedBox(height: 50,),InkWell(
+                onTap: (){
+                  Navigator.push(
+                      context, PageTransition(
+                      child: Home1(), type: PageTransitionType.rightToLeft, duration: Duration(milliseconds: 200)
+                  ));
+                },
+                child: Center(child: StripedBorderContainer(width: w-30, height: h/4-20, str: 'Test Video', h: Icon(Icons.play_circle),))),
+
           ],
         ):
         SingleChildScrollView(
