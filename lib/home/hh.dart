@@ -28,7 +28,6 @@ class _JState extends State<J> {
 
   void initState(){
     hg();
-
   }
   void hg()async{
     final SharedPreferences prefs = await SharedPreferences.getInstance();

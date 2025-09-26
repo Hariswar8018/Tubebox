@@ -68,51 +68,71 @@ class EachCard extends StatefulWidget {
 class _EachCardState extends State<EachCard> {
   @override
   Widget build(BuildContext context) {
-    return Card(
-      elevation: 4,
-      color: Colors.white,
-      shadowColor: Colors.black26,
-      margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-      child: ListTile(
-        leading: Image.network(
-          picresult,
-          width: 120,
-          height: 60,
-          fit: BoxFit.cover,
-          errorBuilder: (context, error, stackTrace) => const Icon(Icons.broken_image),
-        ),
-        title: Text(widget.vi.name,style: TextStyle(fontWeight: FontWeight.w800),),
-        subtitle: Container(
-          width: 120,
-          height: 40,
+    return Dismissible(
+      direction: DismissDirection.horizontal,
+      background: Container(
+        color: Colors.red,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 15.0),
           child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              widget.vi.hd ? const Icon(Icons.hd, color: Colors.green) : SizedBox(),
-              widget.vi.sd ? const Icon(Icons.sd, color: Colors.red) : SizedBox(),
-              widget.vi.s1.isNotEmpty ? Text(widget.vi.s1) : SizedBox(),
+              Text("Delete from History",style: TextStyle(color: Colors.white,fontWeight: FontWeight.w800),),
+              Text("Delete from History",style: TextStyle(color: Colors.white,fontWeight: FontWeight.w800),),
             ],
           ),
         ),
-        trailing: InkWell(
-            onTap: (){
+      ),
+      onDismissed: (direction) async {
+        final SharedPreferences prefs = await SharedPreferences.getInstance();
+        List<String> items = prefs.getStringList('video') ??[];
+        print(items);
+        items.remove(widget.vi.id);
+        prefs.setStringList('video',items);
+        Global.showMessage(context, "Video Deleted from History ✅. Next Time onwards will not be Shown");
+      },
+      key: Key("value"),
+      child: Card(
+        elevation: 4,
+        color: Colors.white,
+        shadowColor: Colors.black26,
+        margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+        child: ListTile(
+          leading: Image.network(
+            picresult,
+            width: 120,
+            height: 60,
+            fit: BoxFit.cover,
+            errorBuilder: (context, error, stackTrace) => const Icon(Icons.broken_image),
+          ),
+          title: Text(widget.vi.name,style: TextStyle(fontWeight: FontWeight.w800),),
+          subtitle: Container(
+            width: 120,
+            height: 40,
+            child: Row(
+              children: [
+                widget.vi.hd ? const Icon(Icons.hd, color: Colors.green) : SizedBox(),
+                widget.vi.sd ? const Icon(Icons.sd, color: Colors.red) : SizedBox(),
+                widget.vi.s1.isNotEmpty ? Text(widget.vi.s1) : SizedBox(),
+              ],
+            ),
+          ),
+          onTap: () {
+            if(widget.admin){
+              Clipboard.setData(ClipboardData(text: "https://tubebox.in/${widget.vi.id}"));
+              Global.showMessage(context, "Copied to Clipboard");
+            }else{
+              watch(widget.vi.link);
+            }
+          },
+          onLongPress: (){
+            if(widget.admin){
+              watch(widget.vi.link);
+            }else{
 
-            },
-            child: Icon(Icons.delete,color: Colors.red,size: 20,)),
-        onTap: () {
-          if(widget.admin){
-            Clipboard.setData(ClipboardData(text: "https://tubebox.in/${widget.vi.id}"));
-            Global.showMessage(context, "Copied to Clipboard");
-          }else{
-            watch(widget.vi.link);
-          }
-        },
-        onLongPress: (){
-          if(widget.admin){
-            watch(widget.vi.link);
-          }else{
-
-          }
-        },
+            }
+          },
+        ),
       ),
     );
   }
