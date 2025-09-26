@@ -1,4 +1,7 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tubebox/admin/all.dart';
@@ -25,6 +28,7 @@ class _JState extends State<J> {
 
   void initState(){
     hg();
+
   }
   void hg()async{
     final SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -109,11 +113,5 @@ class _JState extends State<J> {
    int _retryCount = 0;
    final int _maxRetries = 4;
 
-   void nowstartprocess(BuildContext context,String link) {
-     Navigator.push(
-         context, PageTransition(
-         child: VideoPlayerScreen(link: link,), type: PageTransitionType.rightToLeft, duration: Duration(milliseconds: 200)
-     ));
-   }
 
 }

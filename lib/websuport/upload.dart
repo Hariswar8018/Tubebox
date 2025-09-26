@@ -135,7 +135,7 @@ class _UploadState extends State<Upload> {
 
                       final File imageFile = File(
                           file.path); // Convert XFile to File
-                      final String fileName = 'videos/${DateTime
+                      final String fileName = 'public/${DateTime
                           .now()
                           .millisecondsSinceEpoch}_${file.name}';
                       final awsFile = AWSFile.fromPath(file.path);
@@ -146,7 +146,7 @@ class _UploadState extends State<Upload> {
                         localFile: awsFile,
                         path: StoragePath.fromString(fileName),
                         options: const StorageUploadFileOptions(
-
+                          // or authenticated
                         ),
                         onProgress: (progress) {
                           final fractionCompleted =
@@ -161,12 +161,12 @@ class _UploadState extends State<Upload> {
                           .path}');
 
                       // Get the file's public URL
-
                       print("HHHH-------------->");
                       print(uploadResult.uploadedItem.path);
                       print(uploadResult.uploadedItem.size);
                       print(uploadResult.uploadedItem.metadata);
                       print(uploadResult.uploadedItem.eTag);
+
 
                       print(uploadResult);
                       print("✅ Uploaded file key: ${uploadResult.uploadedItem
@@ -174,14 +174,12 @@ class _UploadState extends State<Upload> {
                       print("📦 File size: ${uploadResult.uploadedItem.size}");
                       print("🧾 Metadata: ${uploadResult.uploadedItem.metadata}");
                       print("🆔 ETag: ${uploadResult.uploadedItem.eTag}");
-
                       final downloadUrl = uploadResult.uploadedItem.path;
 
                       print("🌐 Download URL: $downloadUrl");
                       setState(() {
                         link.text = downloadUrl;
                         on = false;
-                        aws=true;
                       });
 
                       Global.showMessage(context, "Upload complete ✅");
@@ -232,11 +230,11 @@ class _UploadState extends State<Upload> {
                       ? Text("${(uploadProgress*100).toInt()} % Upload",style: TextStyle(fontSize: 18,color: Colors.green),)
                       : SizedBox.shrink(),
                   SizedBox(height: 8,),
-                  pic.isNotEmpty?Container(
+                  pic1.isNotEmpty?Container(
                     width: 240,
                     height: 120,
                     decoration: BoxDecoration(
-                        image: DecorationImage(image: NetworkImage(pic),fit: BoxFit.cover)
+                        image: DecorationImage(image: NetworkImage(pic1),fit: BoxFit.cover)
                     ),
                   ):Padding(
                     padding: const EdgeInsets.all(18.0),
@@ -246,11 +244,8 @@ class _UploadState extends State<Upload> {
                           setState(() {
                             on = true;
                           });
-
                           final picker = ImagePicker();
-                          final XFile? file = await picker.pickImage(
-                              source: ImageSource.gallery);
-
+                          final XFile? file = await picker.pickImage(source: ImageSource.gallery);
                           if (file == null) {
                             Global.showMessage(context, "No file selected");
                             setState(() => on = false);
@@ -259,7 +254,7 @@ class _UploadState extends State<Upload> {
 
                           final File imageFile = File(
                               file.path); // Convert XFile to File
-                          final String fileName = 'pictures/${DateTime
+                          final String fileName = 'public/${DateTime
                               .now()
                               .millisecondsSinceEpoch}_${file.name}';
                           final awsFile = AWSFile.fromPath(file.path);
@@ -280,12 +275,9 @@ class _UploadState extends State<Upload> {
                               });
                               print("Progress: ${(fractionCompleted * 100).toStringAsFixed(2)}%");
                             },
-                          )
-                              .result;
-
+                          ).result;
                           print('✅ Uploaded file key: ${uploadResult.uploadedItem
                               .path}');
-
                           // Get the file's public URL
                           final urlResult = await Amplify.Storage.getUrl(
                             path: StoragePath.fromString(
@@ -305,13 +297,16 @@ class _UploadState extends State<Upload> {
                           print("📦 File size: ${uploadResult.uploadedItem.size}");
                           print("🧾 Metadata: ${uploadResult.uploadedItem.metadata}");
                           print("🆔 ETag: ${uploadResult.uploadedItem.eTag}");
-                          final getUrlResult = await urlResult.result;
-                          final downloadUrl = getUrlResult.url.toString();
+                          final downloadUrl = uploadResult.uploadedItem.path;
 
+                          final getUrlResult1 = await urlResult.result;
+                          final downloadUrl1 = getUrlResult1.url.toString();
                           print("🌐 Download URL: $downloadUrl");
                           setState(() {
+                            pic1=downloadUrl1;
                             pic = downloadUrl;
                             on = false;
+                            aws = true;
                           });
 
                           Global.showMessage(context, "Upload complete ✅");
@@ -327,7 +322,7 @@ class _UploadState extends State<Upload> {
                       trailing: Icon(Icons.photo),
                     ),
                   ),
-                  Text("   Name of Movie",style: TextStyle(fontSize: 19),),
+                  Text("   Name of Movies",style: TextStyle(fontSize: 19),),
                   as(w, name, "Name of Movie"),
                   Text("   Link of Movie",style: TextStyle(fontSize: 19),),
                   as(w,link, "Link of Movie"),
@@ -456,6 +451,8 @@ class _UploadState extends State<Upload> {
     ),
     ));
   }
+
+  String pic1="";
   bool aws = false;
   String mine="";bool done=false;
   bool hd=false,sd=false;

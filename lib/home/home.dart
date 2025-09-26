@@ -20,6 +20,7 @@ import 'package:carousel_slider_plus/carousel_slider_plus.dart';
 import 'dart:io';
 
 import 'package:app_links/app_links.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 class Home extends StatefulWidget {
  Home({super.key});
@@ -73,9 +74,38 @@ class _HomeState extends State<Home> {
 
   void initState(){
     initUniLinks();
-
+    _loadAd();
+    loadas();
   }
 
+  void _loadAd() {
+    final bannerAd = BannerAd(
+      size: AdSize.banner,
+      adUnitId: "ca-app-pub-2242333705148339/2839435264",
+      request: const AdRequest(),
+      listener: BannerAdListener(
+        // Called when an ad is successfully received.
+        onAdLoaded: (ad) {
+          if (!mounted) {
+            ad.dispose();
+            return;
+          }
+          setState(() {
+            _bannerAd = ad as BannerAd;
+          });
+        },
+        // Called when an ad request failed.
+        onAdFailedToLoad: (ad, error) {
+          debugPrint('BannerAd failed to load: $error');
+          ad.dispose();
+        },
+      ),
+    );
+
+    // Start loading.
+    bannerAd.load();
+  }
+  BannerAd? _bannerAd;
   @override
   void dispose() {
     videolink = "";      // Resetting state
@@ -408,9 +438,10 @@ class _HomeState extends State<Home> {
                                 SizedBox(width: 10,),
                                 InkWell(
                                     onTap: (){
-                                      if(vi.id.isNotEmpty){
+                                      if(videolink.isNotEmpty){
                                         addn(vi.id);
-                                        load(context, vi.link);
+                                        load(context, videolink);
+                                        return ;
                                       }
                                       if(text.text.isEmpty){
                                         return ;
@@ -446,6 +477,7 @@ class _HomeState extends State<Home> {
                                   if(vi.id.isNotEmpty){
                                     addn(vi.id);
                                     load(context, vi.link);
+
                                   }
                                   if(text.text.isEmpty){
                                     return ;
@@ -484,8 +516,7 @@ class _HomeState extends State<Home> {
                   ],
                 ),
               ),
-              SizedBox(height: 15,),
-
+              SizedBox(height: 1,),
               images.isNotEmpty?Container(
                 width: w,height: 250,
                 child: Stack(
@@ -562,7 +593,15 @@ class _HomeState extends State<Home> {
                   ],
                 ),
               ): SizedBox(),
-
+              SizedBox(
+                width: w,
+                height: 50,
+                child: _bannerAd == null
+                // Nothing to render yet.
+                    ? const SizedBox()
+                // The actual ad.
+                    : AdWidget(ad: _bannerAd!),
+              ),
               SizedBox(height: 15,),
               Container(
                 width: w,
@@ -749,20 +788,7 @@ class _HomeState extends State<Home> {
 
 
 
-  void nowstartprocess(BuildContext context, String link) {
-    print("---------------------------------------------------------------->");
-    print(videolink);
-    Navigator.push(
-      context,
-      PageTransition(
-        child: VideoPlayerScreen(link: videolink),
-        type: PageTransitionType.rightToLeft,
-        duration: Duration(milliseconds: 200),
-      ),
-    );
-    print("---------------------------------------------------------------->");
 
-  }
 
   Future<void> addn(String str) async {
     try {
@@ -775,6 +801,87 @@ class _HomeState extends State<Home> {
     }
   }
   TextEditingController text=TextEditingController();
+
+  InterstitialAd? _interstitialAd;
+
+  Future<void> _incrementCounter() async {
+    final prefs = await SharedPreferences.getInstance();
+    int counter = prefs.getInt('ad_counter') ?? 0;
+    counter++;
+    await prefs.setInt('ad_counter', counter);
+  }
+
+  Future<int> _getCounter() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getInt('ad_counter') ?? 0;
+  }
+
+  void loadas() {
+    InterstitialAd.load(
+      adUnitId: "ca-app-pub-2242333705148339/5805608406", // replace with yours
+      request: const AdRequest(),
+      adLoadCallback: InterstitialAdLoadCallback(
+        onAdLoaded: (InterstitialAd ad) {
+          _interstitialAd = ad;
+        },
+        onAdFailedToLoad: (LoadAdError error) {
+          _interstitialAd = null;
+        },
+      ),
+    );
+  }
+
+  Future<void> nowstartprocess(BuildContext context, String link) async {
+    // increment counter
+    await _incrementCounter();
+
+    // get current value
+    int counter = await _getCounter();
+    print("Counter value: $counter");
+
+    if (counter % 2 == 0) {
+      // divisible by 2 → show ad
+      if (_interstitialAd != null) {
+        _interstitialAd!.fullScreenContentCallback = FullScreenContentCallback(
+          onAdDismissedFullScreenContent: (ad) {
+            ad.dispose();
+            _interstitialAd = null;
+            _loadAd(); // preload for next
+
+            _navigateToVideo(context, link);
+          },
+          onAdFailedToShowFullScreenContent: (ad, error) {
+            ad.dispose();
+            _interstitialAd = null;
+            _navigateToVideo(context, link);
+          },
+        );
+
+        _interstitialAd!.show();
+      } else {
+        _navigateToVideo(context, link);
+      }
+    } else if (counter % 3 == 0) {
+      // divisible by 3 → don't show ad
+      print("Counter divisible by 3 → no ad");
+      _navigateToVideo(context, link);
+    } else {
+      // otherwise → direct navigation
+      _navigateToVideo(context, link);
+    }
+  }
+
+  void _navigateToVideo(BuildContext context, String link) {
+    Navigator.push(
+      context,
+      PageTransition(
+        child: VideoPlayerScreen(link: link),
+        type: PageTransitionType.rightToLeft,
+        duration: const Duration(milliseconds: 200),
+      ),
+    );
+  }
+
 }
 
 

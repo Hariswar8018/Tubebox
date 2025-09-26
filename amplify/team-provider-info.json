@@ -30,6 +30,13 @@
       },
       "api": {
         "videos": {}
+      },
+      "hosting": {
+        "amplifyhosting": {
+          "appId": "dlvtx0f09tcbc",
+          "type": "manual"
+        },
+        "S3AndCloudFront": {}
       }
     }
   },

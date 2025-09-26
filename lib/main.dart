@@ -7,7 +7,7 @@ import 'package:amplify_storage_s3/amplify_storage_s3.dart' show AmplifyStorageS
 import 'package:flutter/foundation.dart';
 import 'package:amplify_datastore/amplify_datastore.dart'; // DataStore
 import 'models/ModelProvider.dart'; // ModelProvider
-import 'amplifyconfiguration.dart'; // Auto-generated config
+import 'amplifyconfiguration.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -19,7 +19,7 @@ import 'package:tubebox/websuport/navigation.dart';
 import 'dart:io';
 import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
 import 'dart:io' show File;
-
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:aws_common/vm.dart';
 
@@ -38,6 +38,7 @@ Future<void> main() async {
     );
     return ;
   }
+  unawaited(MobileAds.instance.initialize());
   final SharedPreferences pref= await SharedPreferences.getInstance();
   bool night=pref.getBool("night")??false;
 
@@ -94,7 +95,6 @@ class _MyHomePageState extends State<MyHomePage> {
         await Amplify.addPlugins([
           AmplifyAuthCognito(),
           AmplifyStorageS3(),
-
         ]);
         await Amplify.configure(amplifyconfig);
         setState(() {
@@ -106,51 +106,7 @@ class _MyHomePageState extends State<MyHomePage> {
       }
     }
   }
-  Future<void> uploadFile(File file) async {
-    try {
-      final result = await Amplify.Storage.uploadFile(
-        localFile: AWSFilePlatform.fromFile(file),
-        path: const StoragePath.fromString('picture-submissions/myPhoto.png'),
-      ).result;
-      safePrint('Uploaded file: ${result.uploadedItem.path}');
-    } on StorageException catch (e) {
-      safePrint(e.message);
-    }
-  }
 
-  Future confirm() async {
-    final result = await Amplify.Auth.confirmSignUp(
-      username: "hariswarsamasi@gmail.com",
-      confirmationCode: "676944",
-    );
-
-    if (result.isSignUpComplete) {
-      print("✅ User confirmed!");
-      GloablWeb.mess(context, "Account confirmed. You can now log in!", true);
-    } else {
-      print("⚠️ Still not complete: ${result.nextStep}");
-      GloablWeb.mess(context, "Something went wrong. Try again.", false);
-    }
-  }
-
-  Future<void> signUpUser(String email, String password) async {
-    try {
-
-      final res = await Amplify.Auth.signUp(
-        username: email,
-        password: password,
-        options: SignUpOptions(
-          userAttributes: {
-            AuthUserAttributeKey.email: email,
-          }
-        )
-
-      );
-      print("🔐 Sign up complete: ${res.isSignUpComplete}");
-    } on AuthException catch (e) {
-      print("❌ Sign up error: ${e.message}");
-    }
-  }
 
 
   void initState(){

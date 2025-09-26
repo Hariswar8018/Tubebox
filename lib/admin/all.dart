@@ -4,7 +4,9 @@ import 'package:amplify_storage_s3/amplify_storage_s3.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:page_transition/page_transition.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tubebox/global.dart';
 
 import '../model/video_model.dart';
@@ -19,7 +21,7 @@ class All_Videos extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("All Videos", style: TextStyle(color: Colors.black)),
+        title: const Text("My Videos", style: TextStyle(color: Colors.black)),
       ),
       body: FutureBuilder<QuerySnapshot>(
         future: FirebaseFirestore.instance.collection("video").get(),
@@ -44,7 +46,7 @@ class All_Videos extends StatelessWidget {
             itemCount: videos.length,
             itemBuilder: (context, index) {
               final vi = videos[index];
-              return EachCard(vi: vi,admin: false,);
+              return EachCard(vi: vi,admin:true,);
             },
           );
         },
@@ -91,12 +93,24 @@ class _EachCardState extends State<EachCard> {
             ],
           ),
         ),
+        trailing: InkWell(
+            onTap: (){
+
+            },
+            child: Icon(Icons.delete,color: Colors.red,size: 20,)),
         onTap: () {
           if(widget.admin){
             Clipboard.setData(ClipboardData(text: "https://tubebox.in/${widget.vi.id}"));
             Global.showMessage(context, "Copied to Clipboard");
           }else{
             watch(widget.vi.link);
+          }
+        },
+        onLongPress: (){
+          if(widget.admin){
+            watch(widget.vi.link);
+          }else{
+
           }
         },
       ),
@@ -118,14 +132,7 @@ class _EachCardState extends State<EachCard> {
 
       final getUrlResult = await urlResult.result;
       final downloadUrl = getUrlResult.url.toString();
-      Navigator.push(
-        context,
-        PageTransition(
-          child: VideoPlayerScreen(link: downloadUrl),
-          type: PageTransitionType.rightToLeft,
-          duration: Duration(milliseconds: 200),
-        ),
-      );
+      nowstartprocess(context, downloadUrl);
     }catch(e){
       Global.showMessage(context, e.toString());
     }
@@ -133,10 +140,13 @@ class _EachCardState extends State<EachCard> {
 
   void initState(){
     picresulttoo(widget.vi.pic);
+    loadas();
   }
   String picresult="https://media.gettyimages.com/id/2172513824/video/error-404-page-in-glitch-style-page-not-found-concept-system-error-illustration-geometric.jpg?s=640x640&k=20&c=G3mUndBTQzJyiUpFPkQKXQ5eKcdkOg4oG2YWPxVj-XE=";
 
   Future<void> picresulttoo(String piclink) async {
+
+
     try {
       final urlResult1 = await Amplify.Storage.getUrl(
         path: StoragePath.fromString(piclink),
@@ -158,4 +168,84 @@ class _EachCardState extends State<EachCard> {
 
     }
   }
+  InterstitialAd? _interstitialAd;
+
+  Future<void> _incrementCounter() async {
+    final prefs = await SharedPreferences.getInstance();
+    int counter = prefs.getInt('ad_counter') ?? 0;
+    counter++;
+    await prefs.setInt('ad_counter', counter);
+  }
+
+  Future<int> _getCounter() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getInt('ad_counter') ?? 0;
+  }
+
+  void loadas() {
+    InterstitialAd.load(
+      adUnitId: "ca-app-pub-2242333705148339/5805608406", // replace with yours
+      request: const AdRequest(),
+      adLoadCallback: InterstitialAdLoadCallback(
+        onAdLoaded: (InterstitialAd ad) {
+          _interstitialAd = ad;
+        },
+        onAdFailedToLoad: (LoadAdError error) {
+          _interstitialAd = null;
+        },
+      ),
+    );
+  }
+
+  Future<void> nowstartprocess(BuildContext context, String link) async {
+    // increment counter
+    await _incrementCounter();
+
+    // get current value
+    int counter = await _getCounter();
+    print("Counter value: $counter");
+
+    if (counter % 2 == 0) {
+      // divisible by 2 → show ad
+      if (_interstitialAd != null) {
+        _interstitialAd!.fullScreenContentCallback = FullScreenContentCallback(
+          onAdDismissedFullScreenContent: (ad) {
+            ad.dispose();
+            _interstitialAd = null;
+            loadas();
+            _navigateToVideo(context, link);
+          },
+          onAdFailedToShowFullScreenContent: (ad, error) {
+            ad.dispose();
+            _interstitialAd = null;
+            _navigateToVideo(context, link);
+          },
+        );
+
+        _interstitialAd!.show();
+      } else {
+        _navigateToVideo(context, link);
+      }
+    } else if (counter % 3 == 0) {
+      // divisible by 3 → don't show ad
+      print("Counter divisible by 3 → no ad");
+      _navigateToVideo(context, link);
+    } else {
+      // otherwise → direct navigation
+      _navigateToVideo(context, link);
+    }
+  }
+
+  void _navigateToVideo(BuildContext context, String link) {
+    Navigator.push(
+      context,
+      PageTransition(
+        child: VideoPlayerScreen(link: link),
+        type: PageTransitionType.rightToLeft,
+        duration: const Duration(milliseconds: 200),
+      ),
+    );
+  }
+
+
 }

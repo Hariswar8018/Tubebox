@@ -112,8 +112,7 @@ class _AddVideoState extends State<AddVideo> {
                         });
                         print("Progress: ${(fractionCompleted * 100).toStringAsFixed(2)}%");
                       },
-                    )
-                        .result;
+                    ).result;
                     print('✅ Uploaded file key: ${uploadResult.uploadedItem
                         .path}');
                     // Get the file's public URL
