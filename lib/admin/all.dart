@@ -138,24 +138,7 @@ class _EachCardState extends State<EachCard> {
   }
 
   void watch(String link) async {
-    try {
-      final urlResult = await Amplify.Storage.getUrl(
-        path: StoragePath.fromString(link),
-        options: const StorageGetUrlOptions(
-          pluginOptions: S3GetUrlPluginOptions(
-            expiresIn: Duration(days: 1),
-            validateObjectExistence: true,
-            useAccelerateEndpoint: false,
-          ),
-        ),
-      );
-
-      final getUrlResult = await urlResult.result;
-      final downloadUrl = getUrlResult.url.toString();
-      nowstartprocess(context, downloadUrl);
-    }catch(e){
-      Global.showMessage(context, e.toString());
-    }
+      nowstartprocess(context,link);
   }
 
   void initState(){
@@ -260,7 +243,7 @@ class _EachCardState extends State<EachCard> {
     Navigator.push(
       context,
       PageTransition(
-        child: VideoPlayerScreen(link: link),
+        child: VideoPlayerScreen( video: widget.vi,),
         type: PageTransitionType.rightToLeft,
         duration: const Duration(milliseconds: 200),
       ),

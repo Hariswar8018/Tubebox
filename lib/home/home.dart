@@ -175,34 +175,13 @@ class _HomeState extends State<Home> {
         vi= VideoModel.fromJson(doc.data() as Map<String, dynamic>);
         if(vi.link.isNotEmpty){
           if(vi.aws){
-            print("---------------------------------------------------------------->");
             print(vi.link);
             print(vi.toJson());
             try {
               picresulttoo(vi.pic);
-              final urlResult = await Amplify.Storage.getUrl(
-                path: StoragePath.fromString("${vi.link}"),
-                options: const StorageGetUrlOptions(
-                  pluginOptions: S3GetUrlPluginOptions(
-                    expiresIn: Duration(days: 1),
-                    validateObjectExistence: true,
-                    useAccelerateEndpoint: false,
-                  ),
-                ),
-              );
-
-              final getUrlResult = await urlResult.result;
-              final downloadUrl = getUrlResult.url.toString();
-
-              print("🔗 Link Key: ${vi.link}");
-              print("📥 Download URL: $downloadUrl");
-              Uri uri = Uri.parse(downloadUrl);
-              print(uri.queryParameters.keys.toList());
-              print("---------------------------------------------------------------->");
               setState(() {
                 yes = true;
                 fetching = false;
-                videolink = downloadUrl;
               });
             }catch(e){
               setState(() {
@@ -438,7 +417,7 @@ class _HomeState extends State<Home> {
                                 SizedBox(width: 10,),
                                 InkWell(
                                     onTap: (){
-                                      if(videolink.isNotEmpty){
+                                      if(vi.id.isNotEmpty){
                                         addn(vi.id);
                                         load(context, videolink);
                                         return ;
@@ -759,26 +738,10 @@ class _HomeState extends State<Home> {
 
 
   Future<void> load(BuildContext context,String link) async {
-    nowstartprocess(context, link);
-
+    nowstartprocess(context, );
     return ;
-
-    final SharedPreferences pref= await SharedPreferences.getInstance();
-    int y= pref.getInt("time")??0;
-    await pref.setInt("time",y+1);
-
-
-    print(y);
-    if(y%3==0||y!=0){
-      loadInterstitialAd(context, link,true);
-    }else{
-      setState(() {
-        fetching = false;
-      });
-      nowstartprocess(context, link);
-    }
-
   }
+
   void loadInterstitialAd(BuildContext context, String link,bool v) {
     setState(() {
       fetching = true;
@@ -831,7 +794,7 @@ class _HomeState extends State<Home> {
     );
   }
 
-  Future<void> nowstartprocess(BuildContext context, String link) async {
+  Future<void> nowstartprocess(BuildContext context) async {
     // increment counter
     await _incrementCounter();
 
@@ -848,34 +811,34 @@ class _HomeState extends State<Home> {
             _interstitialAd = null;
             _loadAd(); // preload for next
 
-            _navigateToVideo(context, link);
+            _navigateToVideo(context);
           },
           onAdFailedToShowFullScreenContent: (ad, error) {
             ad.dispose();
             _interstitialAd = null;
-            _navigateToVideo(context, link);
+            _navigateToVideo(context);
           },
         );
 
         _interstitialAd!.show();
       } else {
-        _navigateToVideo(context, link);
+        _navigateToVideo(context);
       }
     } else if (counter % 3 == 0) {
       // divisible by 3 → don't show ad
       print("Counter divisible by 3 → no ad");
-      _navigateToVideo(context, link);
+      _navigateToVideo(context, );
     } else {
       // otherwise → direct navigation
-      _navigateToVideo(context, link);
+      _navigateToVideo(context,);
     }
   }
 
-  void _navigateToVideo(BuildContext context, String link) {
+  void _navigateToVideo(BuildContext context) {
     Navigator.push(
       context,
       PageTransition(
-        child: VideoPlayerScreen(link: link),
+        child: VideoPlayerScreen( video: vi,),
         type: PageTransitionType.rightToLeft,
         duration: const Duration(milliseconds: 200),
       ),
