@@ -408,7 +408,7 @@ class _UploadState extends State<Upload> {
                         String id=DateTime.now().microsecondsSinceEpoch.toString();
                         VideoModel video=VideoModel(
                           aws:true,
-                            name: name.text, id: id, pic: pic, link: link.text, hd: hd, sd: sd, s1: "", pin:false
+                            name: name.text, id: id, pic: pic, link: link.text, hd: hd, sd: sd, s1: "", pin:false, views: 102
                         );
                         print("2");
                         await FirebaseFirestore.instance.collection("video").doc(id).set(video.toJson());

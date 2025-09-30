@@ -1,9 +1,12 @@
 import 'dart:io';
 import 'package:amplify_flutter/amplify_flutter.dart' show Amplify, StorageGetUrlOptions, StoragePath;
 import 'package:amplify_storage_s3/amplify_storage_s3.dart';
+import 'package:app_links/app_links.dart';
 import 'package:chewie/chewie.dart';
+import 'package:cloud_firestore/cloud_firestore.dart' as ds;
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:tubebox/model/video_model.dart';
 import 'package:video_player/video_player.dart';
 import 'package:flutter/services.dart'; // For orientation lock
@@ -15,7 +18,7 @@ import '../main.dart'; // For auto-hide overlay
 
 class VideoPlayerScreen extends StatefulWidget {
 
-  final VideoModel video;
+  VideoModel video;
   VideoPlayerScreen({required this.video});
 
   @override
@@ -25,19 +28,28 @@ class VideoPlayerScreen extends StatefulWidget {
 class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
   late VideoPlayerController _videoController;
   ChewieController? _chewieController;
-  bool isLocked = false; // Lock screen functionality
-  bool showControls = false; // To toggle the overlay
+  bool isLocked = false;
+  bool showControls = false;
   double brightness = 0.5;
   double volume = 0.5;
-  bool isLooping = false; // Loop toggle
+  bool isLooping = false;
   Timer? _overlayTimer;
-  bool isVolumeBrightnessVisible = false; // To auto-hide Volume & Brightness UI
+  bool isVolumeBrightnessVisible = false;
 
   @override
   void initState() {
     super.initState();
     loadAd();
-    _initializePlayer();
+    increaseview();
+    _initializePlayer(widget.video.link);
+  }
+
+  Future<void> increaseview() async {
+    await ds.FirebaseFirestore.instance
+        .collection("video")
+        .doc(widget.video.id).update({
+      "views":ds.FieldValue.increment(2),
+    });
   }
   final List<Size> aspectRatios = [
     Size(16, 9),
@@ -65,10 +77,69 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
     });
   }
   int aspectRatioIndex = 0;
-  Future<void> _initializePlayer() async {
+
+  StreamSubscription<String>? _linkSubscription;
+
+  Future<void> initUniLinks() async {
+    try {
+      final appLinks = AppLinks();
+
+      String? initialLink = await appLinks.getInitialLinkString();
+      if (initialLink != null) {
+        String prefix = "https://tubebox.in/";
+        String videoId = initialLink.substring(prefix.length);
+
+        // Ensure the ID is valid
+        if (videoId.isEmpty) {
+          print("Error: No video ID found in the link.");
+          return null;
+        }
+        ds.DocumentSnapshot doc = await ds.FirebaseFirestore.instance
+            .collection("video")
+            .doc(videoId)
+            .get();
+        if (doc.exists) {
+          VideoModel vi= VideoModel.fromJson(doc.data() as Map<String, dynamic>);
+          _initializePlayer(vi.link);
+          widget.video=vi;
+        }else{
+
+        }
+      }
+
+
+      _linkSubscription = appLinks.stringLinkStream.listen((String link) async {
+        String prefix = "https://tubebox.in/";
+        String videoId = link.substring(prefix.length);
+
+        // Ensure the ID is valid
+        if (videoId.isEmpty) {
+          print("Error: No video ID found in the link.");
+          return null;
+        }
+        ds.DocumentSnapshot doc = await ds.FirebaseFirestore.instance
+            .collection("video")
+            .doc(videoId)
+            .get();
+        if (doc.exists) {
+          VideoModel vi= VideoModel.fromJson(doc.data() as Map<String, dynamic>);
+          _initializePlayer(vi.link);
+          widget.video=vi;
+        }else{
+
+        }
+      }, onError: (err) {
+        print("Error receiving link: $err");
+      });
+    } catch (e) {
+      print("Error initializing links: $e");
+    }
+  }
+
+  Future<void> _initializePlayer(String link) async {
     try {
         final urlResult = await Amplify.Storage.getUrl(
-          path: StoragePath.fromString(widget.video.link),
+          path: StoragePath.fromString(link),
           options:  StorageGetUrlOptions(
             pluginOptions: S3GetUrlPluginOptions(
               expiresIn: Duration(days: 1),
@@ -469,17 +540,24 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
       backgroundColor:Colors.black,
         appBar: AppBar(
           backgroundColor: Colors.black,
-          leading: Padding(
-            padding: const EdgeInsets.only(left: 8.0),
-            child: CircleAvatar(
-              backgroundColor: black,
-              child: Icon(Icons.arrow_back,color: Colors.greenAccent,),
+          leading: InkWell(
+            onTap: (){
+              Navigator.pop(context);
+            },
+            child: Padding(
+              padding: const EdgeInsets.only(left: 8.0),
+              child: CircleAvatar(
+                backgroundColor: black,
+                child: Icon(Icons.arrow_back,color: Colors.greenAccent,),
+              ),
             ),
           ),
           actions: [
             InkWell(
               onTap: (){
-
+                SharePlus.instance.share(
+                    ShareParams(text: 'Check out this Amazing Video from Tubebox \n \nhttps://tubebox.in/${widget.video.id}')
+                );
               },
               child:                      Padding(
                 padding: const EdgeInsets.only(left:9.0),
@@ -492,7 +570,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
             InkWell(
               onTap: (){
                 mess="NA";
-                _initializePlayer();
+                _initializePlayer(widget.video.link);
                 setState(() {
 
                 });
@@ -640,19 +718,24 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
             Row(
               children: [
                 SizedBox(width: 22,),
-                t("43 Views"),
-                t("649 MB"), t("20 Days Ago"),
-
+                t("${widget.video.views} Views"),
+                t("649 MB"), t("${daysPassedFromMicroseconds(widget.video.id)} Days Ago"),
                ],
             ),
             SizedBox(height: 10,),
             Row(
               children: [
                 SizedBox(width: 19,),
-                widget.video.hd ? const Icon(Icons.hd, color: Colors.green,size: 30,) : SizedBox(),
-                widget.video.sd ? const Icon(Icons.sd, color: Colors.red,size: 30,) : SizedBox(),
+                 const Icon(Icons.hd, color: Colors.green,size: 30,) ,
+                 Icon(Icons.sd, color: Colors.red,size: 30,) ,
                 SizedBox(width: 6,),
-                Icon(Icons.share_outlined, color: Colors.blue,size: 27,),
+                InkWell(
+                    onTap: (){
+                      SharePlus.instance.share(
+                          ShareParams(text: 'Check out this Amazing Video from Tubebox \n \nhttps://tubebox.in/${widget.video.id}')
+                      );
+                    },
+                    child: Icon(Icons.share_outlined, color: Colors.blue,size: 25,)),
                 widget.video.s1.isNotEmpty ? Text(widget.video.s1,style: TextStyle(fontWeight: FontWeight.w700),) : SizedBox(),
               ],
             ),
@@ -679,9 +762,26 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
         ),
     );
   }
+  int daysPassedFromMicroseconds(String microString) {
+    // Convert the string to an integer
+    int microseconds = int.tryParse(microString) ?? 0;
+
+    // Convert microseconds to DateTime
+    DateTime givenDate = DateTime.fromMicrosecondsSinceEpoch(microseconds);
+
+    // Get current date (only date part for accurate day difference)
+    DateTime today = DateTime.now();
+
+    // Calculate difference
+    Duration difference = today.difference(givenDate);
+
+    // Return number of days passed
+    return difference.inDays;
+  }
+
   Widget t(String str)=>Padding(
     padding: const EdgeInsets.only(right: 14.0),
-    child: Text(str,style: TextStyle(color: Colors.white,fontSize: 12,fontWeight: FontWeight.w600),),
+    child: Text(str,style: TextStyle(color: Colors.white,fontSize: 11,fontWeight: FontWeight.w600),),
   );
 
   final String _adUnitId = Platform.isAndroid

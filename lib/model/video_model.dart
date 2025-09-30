@@ -8,12 +8,14 @@ class VideoModel {
   final String s1;
   final bool pin;
 
+  final int views ;
   final bool aws;
 
   VideoModel({
     required this.name,
     required this.id,
     required this.pic,
+    required this.views,
     required this.link,
     required this.hd,
     required this.sd,
@@ -28,6 +30,7 @@ class VideoModel {
       name: json['name'] ?? '',
       aws: json['aws']??true,
       id: json['id'] ?? '',
+      views: json['views']??1,
       pic: json['pic'] ?? '',
       link: json['link'] ?? '',
       hd: json['hd'] ?? false,
@@ -49,6 +52,7 @@ class VideoModel {
       'hd': hd,
       'sd': sd,
       's1': s1,
+      'views':views,
     };
   }
 }

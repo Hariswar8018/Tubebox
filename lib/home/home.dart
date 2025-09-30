@@ -76,6 +76,7 @@ class _HomeState extends State<Home> {
     initUniLinks();
     _loadAd();
     loadas();
+    initUniLinks();
   }
 
   void _loadAd() {
@@ -114,20 +115,60 @@ class _HomeState extends State<Home> {
     super.dispose();
   }
 
- Future<void> initUniLinks() async {
-   try {
-     final appLinks = AppLinks(); // AppLinks is singleton
-     String? initialLink = await appLinks.getInitialLinkString();
-     print(initialLink);
-     print("XXXXXXXXXXXXX");
-     fetchVideoByLink(initialLink!);
-     print("XXXXXXXXXXXXX");
-   } catch(e) {
 
-     print(e);
-   }
- }
- String videolink="";
+  StreamSubscription<String>? _linkSubscription;
+
+  Future<void> initUniLinks() async {
+    try {
+      final appLinks = AppLinks();
+
+      // Handle initial link (when app launches for the first time)
+      String? initialLink = await appLinks.getInitialLinkString();
+      if (initialLink != null) {
+        fetchVideoByLink(initialLink);
+      }
+
+
+      _linkSubscription = appLinks.stringLinkStream.listen((String link) async {
+        String prefix = "https://tubebox.in/";
+        String videoId = link.substring(prefix.length);
+
+        // Ensure the ID is valid
+        if (videoId.isEmpty) {
+          print("Error: No video ID found in the link.");
+          setState(() {
+            fetching=false;
+          });
+          return null;
+        }
+        ds.DocumentSnapshot doc = await ds.FirebaseFirestore.instance
+            .collection("video")
+            .doc(videoId)
+            .get();
+        if (doc.exists) {
+          vi= VideoModel.fromJson(doc.data() as Map<String, dynamic>);
+          Navigator.push(
+            context,
+            PageTransition(
+              child: VideoPlayerScreen( video: vi,),
+              type: PageTransitionType.rightToLeft,
+              duration: const Duration(milliseconds: 200),
+            ),
+          );
+        }else{
+
+        }
+      }, onError: (err) {
+        print("Error receiving link: $err");
+      });
+    } catch (e) {
+      print("Error initializing links: $e");
+    }
+  }
+
+
+
+  String videolink="";
  bool fetching=false;
 
  String picresult="";
@@ -259,7 +300,7 @@ class _HomeState extends State<Home> {
   }
 
   bool yes=false;
-  VideoModel vi=VideoModel(name: "", id: "", pic: "", link: "", hd: false, sd: false, s1: "00:00", pin: false, aws: false);
+  VideoModel vi=VideoModel(name: "", id: "", pic: "", link: "", hd: false, sd: false, s1: "00:00", pin: false, aws: false, views: 100);
 
   bool get isIOS {
     return Platform.isIOS;
@@ -319,9 +360,17 @@ class _HomeState extends State<Home> {
                                       controller: text,
                                       style: TextStyle(color: !isnight ? Colors.black : Colors.white), // Input text color
                                       decoration: InputDecoration(
-                                          hintText:" Paste the Link here.....",hintStyle: TextStyle(color: !isnight?Colors.black:Colors.white),
+                                          hintText:" Paste the Link here.....",
+                                          hintStyle: TextStyle(color: !isnight?Colors.black:Colors.white),
                                           labelStyle: TextStyle(color: !isnight?Colors.black:Colors.white),
-                                          prefixIcon: Icon(Icons.search,color: Colors.blue,),
+                                          prefixIcon: text.text.isEmpty?Icon(Icons.search,color: Colors.blue,):InkWell(
+                                              onTap: (){
+                                                setState(() {
+                                                  text.text="";
+                                                  text.clear();
+                                                });
+                                              },
+                                              child: Icon(Icons.close,color: Colors.red,)),
                                           border: InputBorder.none
                                       ),
                                       onFieldSubmitted: (String s){
