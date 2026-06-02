@@ -1,0 +1,537 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rahul Dev | AI Engineer & Developer Portfolio</title>
+    <meta name="description" content="Portfolio of Rahul Dev, an AI Engineer and Developer specializing in Flutter, Python, and Machine Learning.">
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="#">Rahul<span>.</span>Dev</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav mx-auto">
+                    <li class="nav-item"><a class="nav-link active" href="#home">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#about">About</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#services">Services</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#experience">Experience</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#portfolio">Projects</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
+                </ul>
+                <a href="#contact" class="btn-custom">Hire Me</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero-section">
+        <div class="hero-shape shape-1"></div>
+        <div class="hero-shape shape-2"></div>
+        
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6 mb-5 mb-lg-0">
+                    <span class="hero-subtitle">AI Engineer | Flutter Developer | Mentor</span>
+                    <h1 class="hero-title">I Build <span class="text-gradient">Intelligent Apps</span> & Empower Minds</h1>
+                    <p class="hero-text">I build cross-platform mobile apps, develop deep learning solutions, and mentor aspiring developers & AI engineers.</p>
+                    <div class="d-flex gap-3">
+                        <a href="#portfolio" class="btn-custom">View My Work</a>
+                        <a href="#contact" class="btn-outline-custom">Contact Me</a>
+                    </div>
+                </div>
+                <div class="col-lg-6 text-center">
+                    <div class="hero-img-box">
+                        <div class="floating-icon icon-1">
+                            <i class="fa-brands fa-python fa-lg" style="color: #3776AB;"></i> Python
+                        </div>
+                        <div class="floating-icon icon-2">
+                            <i class="fa-brands fa-google fa-lg" style="color: #4285F4;"></i> Flutter
+                        </div>
+                        <div class="floating-icon icon-3">
+                            <i class="fa-solid fa-brain fa-lg" style="color: #FF6F00;"></i> TensorFlow
+                        </div>
+                        <img src="assets/images/hero_portrait_1777254387208.png" alt="Rahul Dev" class="hero-img">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="section-padding">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6 mb-5 mb-lg-0 pr-lg-5">
+                    <div class="section-title text-start mb-4">
+                        <span class="text-gradient fw-bold">Discover</span>
+                        <h2>About Me</h2>
+                    </div>
+                    <p class="text-muted mb-4">Hello! I'm Rahul, a passionate AI Engineer and Mobile Developer. My journey in tech started with a fascination for how data can be used to solve real-world problems. Over the years, I've honed my skills in machine learning and cross-platform app development to build scalable, intelligent, and user-centric solutions.</p>
+                    <p class="text-muted mb-4">When I'm not coding, you can find me writing technical blogs or mentoring students. I believe in giving back to the community and helping the next generation of tech leaders find their path.</p>
+                    <div class="row text-center text-lg-start mt-5">
+                        <div class="col-sm-4 mb-3">
+                            <h3 class="text-gradient fw-bold">5+</h3>
+                            <p class="text-muted small text-uppercase fw-bold">Years Exp.</p>
+                        </div>
+                        <div class="col-sm-4 mb-3">
+                            <h3 class="text-gradient fw-bold">50+</h3>
+                            <p class="text-muted small text-uppercase fw-bold">Projects</p>
+                        </div>
+                        <div class="col-sm-4 mb-3">
+                            <h3 class="text-gradient fw-bold">200+</h3>
+                            <p class="text-muted small text-uppercase fw-bold">Mentees</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="row g-4">
+                        <div class="col-md-6">
+                            <div class="service-card text-center p-4">
+                                <div class="service-icon mx-auto"><i class="fa-solid fa-code"></i></div>
+                                <h4>Clean Code</h4>
+                                <p class="small text-muted">Writing scalable and maintainable architectures.</p>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mt-md-5">
+                            <div class="service-card text-center p-4">
+                                <div class="service-icon mx-auto"><i class="fa-solid fa-lightbulb"></i></div>
+                                <h4>Innovation</h4>
+                                <p class="small text-muted">Applying the latest AI models to solve complex tasks.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section id="services" class="section-padding bg-light">
+        <div class="container">
+            <div class="section-title">
+                <span class="text-gradient fw-bold text-uppercase">What I Do</span>
+                <h2>My Services</h2>
+                <p>I help businesses and individuals with cutting-edge solutions and mentorship to grow in tech.</p>
+            </div>
+            
+            <div class="row g-4">
+                <div class="col-lg-4 col-md-6">
+                    <div class="service-card">
+                        <div class="service-icon">
+                            <i class="fa-brands fa-android"></i>
+                        </div>
+                        <h3>Flutter App Development</h3>
+                        <p>Cross-platform mobile apps for Android & iOS using Flutter with clean UI/UX and powerful performance.</p>
+                        <a href="#" class="service-link">Learn more <i class="fa-solid fa-arrow-right"></i></a>
+                    </div>
+                </div>
+                
+                <div class="col-lg-4 col-md-6">
+                    <div class="service-card">
+                        <div class="service-icon">
+                            <i class="fa-solid fa-network-wired"></i>
+                        </div>
+                        <h3>Deep Learning Mentorship</h3>
+                        <p>1-on-1 mentorship on Deep Learning, Computer Vision, NLP & real-world AI projects.</p>
+                        <a href="#" class="service-link">Learn more <i class="fa-solid fa-arrow-right"></i></a>
+                    </div>
+                </div>
+                
+                <div class="col-lg-4 col-md-6">
+                    <div class="service-card">
+                        <div class="service-icon">
+                            <i class="fa-solid fa-microchip"></i>
+                        </div>
+                        <h3>AI Engineering</h3>
+                        <p>Building custom AI solutions, model training, deployment & integrating AI into applications.</p>
+                        <a href="#" class="service-link">Learn more <i class="fa-solid fa-arrow-right"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Skills Section -->
+    <section class="section-padding skills-section">
+        <div class="container">
+            <div class="section-title">
+                <span class="text-gradient fw-bold text-uppercase">Skills & Technologies</span>
+                <h2>My Expertise</h2>
+            </div>
+            
+            <div class="row row-cols-2 row-cols-md-4 row-cols-lg-6 g-4 justify-content-center">
+                <div class="col"><div class="skill-box"><i class="fa-brands fa-flutter text-info"></i><span>Flutter</span></div></div>
+                <div class="col"><div class="skill-box"><i class="fa-brands fa-python text-primary"></i><span>Python</span></div></div>
+                <div class="col"><div class="skill-box"><i class="fa-solid fa-brain" style="color: #FF6F00;"></i><span>TensorFlow</span></div></div>
+                <div class="col"><div class="skill-box"><i class="fa-solid fa-layer-group text-danger"></i><span>PyTorch</span></div></div>
+                <div class="col"><div class="skill-box"><i class="fa-solid fa-database text-warning"></i><span>SQL</span></div></div>
+                <div class="col"><div class="skill-box"><i class="fa-brands fa-github text-dark"></i><span>Git</span></div></div>
+                <div class="col"><div class="skill-box"><i class="fa-brands fa-docker text-primary"></i><span>Docker</span></div></div>
+                <div class="col"><div class="skill-box"><i class="fa-brands fa-aws text-warning"></i><span>AWS</span></div></div>
+            </div>
+            
+            <div class="text-center mt-5">
+                <a href="#" class="btn-custom">View All Skills</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Experience Timeline Section -->
+    <section id="experience" class="section-padding bg-light">
+        <div class="container">
+            <div class="section-title">
+                <span class="text-gradient fw-bold text-uppercase">My Journey</span>
+                <h2>Work Experience</h2>
+                <p>A timeline of my professional journey in the tech industry.</p>
+            </div>
+            
+            <div class="timeline mt-5">
+                <div class="timeline-item left">
+                    <div class="timeline-content">
+                        <div class="timeline-date">2023 - Present</div>
+                        <h4>Senior AI Engineer</h4>
+                        <h6 class="text-muted">TechNova Solutions</h6>
+                        <p class="small mt-2">Leading the AI division, developing predictive models and integrating LLMs into enterprise applications. Mentoring junior developers.</p>
+                    </div>
+                </div>
+                <div class="timeline-item right">
+                    <div class="timeline-content">
+                        <div class="timeline-date">2021 - 2023</div>
+                        <h4>Mobile App Developer</h4>
+                        <h6 class="text-muted">Creative Studio</h6>
+                        <p class="small mt-2">Built cross-platform applications using Flutter. Implemented complex state management and beautiful UI/UX designs.</p>
+                    </div>
+                </div>
+                <div class="timeline-item left">
+                    <div class="timeline-content">
+                        <div class="timeline-date">2019 - 2021</div>
+                        <h4>Data Scientist</h4>
+                        <h6 class="text-muted">DataCorp</h6>
+                        <p class="small mt-2">Analyzed large datasets to extract actionable insights. Built machine learning pipelines for customer segmentation.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="stats-section">
+        <div class="container">
+            <div class="row g-4">
+                <div class="col-6 col-md-3 stat-item">
+                    <div class="icon"><i class="fa-solid fa-rocket"></i></div>
+                    <div class="stat-number">50+</div>
+                    <div class="stat-text">Projects Completed</div>
+                </div>
+                <div class="col-6 col-md-3 stat-item">
+                    <div class="icon"><i class="fa-regular fa-face-smile"></i></div>
+                    <div class="stat-number">40+</div>
+                    <div class="stat-text">Happy Clients</div>
+                </div>
+                <div class="col-6 col-md-3 stat-item">
+                    <div class="icon"><i class="fa-solid fa-briefcase"></i></div>
+                    <div class="stat-number">5+</div>
+                    <div class="stat-text">Years Experience</div>
+                </div>
+                <div class="col-6 col-md-3 stat-item">
+                    <div class="icon"><i class="fa-solid fa-user-graduate"></i></div>
+                    <div class="stat-number">200+</div>
+                    <div class="stat-text">Students Mentored</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Portfolio Section -->
+    <section id="portfolio" class="section-padding">
+        <div class="container">
+            <div class="section-title">
+                <span class="text-gradient fw-bold text-uppercase">Portfolio</span>
+                <h2>My Recent Work</h2>
+            </div>
+            
+            <div class="portfolio-filter text-center">
+                <button class="active">All</button>
+                <button>Flutter Apps</button>
+                <button>Deep Learning</button>
+                <button>AI Solutions</button>
+            </div>
+            
+            <div class="row g-4">
+                <div class="col-lg-4 col-md-6">
+                    <div class="portfolio-card">
+                        <div class="portfolio-img">
+                            <img src="assets/images/project_app_1777254402487.png" alt="FitTrack App" class="img-fluid">
+                            <div class="portfolio-overlay">
+                                <a href="#"><i class="fa-solid fa-link"></i></a>
+                            </div>
+                        </div>
+                        <div class="portfolio-info">
+                            <h3>FitTrack App</h3>
+                            <p class="text-muted small">Flutter Fitness App</p>
+                            <div class="portfolio-tags">
+                                <span>Flutter</span>
+                                <span>Firebase</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-lg-4 col-md-6">
+                    <div class="portfolio-card">
+                        <div class="portfolio-img">
+                            <img src="assets/images/project_dashboard_1777254417715.png" alt="Chest X-Ray Classifier" class="img-fluid">
+                            <div class="portfolio-overlay">
+                                <a href="#"><i class="fa-solid fa-link"></i></a>
+                            </div>
+                        </div>
+                        <div class="portfolio-info">
+                            <h3>Data Analytics Dashboard</h3>
+                            <p class="text-muted small">Web Application</p>
+                            <div class="portfolio-tags">
+                                <span>React</span>
+                                <span>Python</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-4 col-md-6">
+                    <div class="portfolio-card">
+                        <div class="portfolio-img">
+                            <img src="assets/images/project_app_1777254402487.png" alt="Chat AI Assistant" class="img-fluid" style="filter: hue-rotate(90deg);">
+                            <div class="portfolio-overlay">
+                                <a href="#"><i class="fa-solid fa-link"></i></a>
+                            </div>
+                        </div>
+                        <div class="portfolio-info">
+                            <h3>Chat AI Assistant</h3>
+                            <p class="text-muted small">AI Chat App</p>
+                            <div class="portfolio-tags">
+                                <span>Flutter</span>
+                                <span>OpenAI API</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="text-center mt-5">
+                <a href="#" class="btn-custom">View All Projects</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section class="section-padding bg-light">
+        <div class="container">
+            <div class="section-title">
+                <span class="text-gradient fw-bold text-uppercase">Testimonials</span>
+                <h2>What Clients & Students Say</h2>
+            </div>
+            
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <div id="testimonialCarousel" class="carousel slide" data-bs-ride="carousel">
+                        <div class="carousel-inner">
+                            <div class="carousel-item active">
+                                <div class="text-center p-4">
+                                    <i class="fa-solid fa-quote-left fa-3x text-gradient mb-4 opacity-50"></i>
+                                    <p class="lead font-italic mb-4">"Rahul delivered an amazing Flutter app for my business. Highly professional, skilled developer, and great communication throughout the project."</p>
+                                    <h5 class="mb-1 fw-bold">Amit Sharma</h5>
+                                    <span class="text-muted small">Founder, FitLife</span>
+                                </div>
+                            </div>
+                            <div class="carousel-item">
+                                <div class="text-center p-4">
+                                    <i class="fa-solid fa-quote-left fa-3x text-gradient mb-4 opacity-50"></i>
+                                    <p class="lead font-italic mb-4">"His deep learning mentorship helped me crack my dream AI role. Super supportive mentor who explains complex concepts simply."</p>
+                                    <h5 class="mb-1 fw-bold">Neha Verma</h5>
+                                    <span class="text-muted small">AI Engineer</span>
+                                </div>
+                            </div>
+                        </div>
+                        <button class="carousel-control-prev" type="button" data-bs-target="#testimonialCarousel" data-bs-slide="prev">
+                            <span class="carousel-control-prev-icon bg-dark rounded-circle p-2" aria-hidden="true"></span>
+                            <span class="visually-hidden">Previous</span>
+                        </button>
+                        <button class="carousel-control-next" type="button" data-bs-target="#testimonialCarousel" data-bs-slide="next">
+                            <span class="carousel-control-next-icon bg-dark rounded-circle p-2" aria-hidden="true"></span>
+                            <span class="visually-hidden">Next</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="section-padding">
+        <div class="container">
+            <div class="section-title">
+                <span class="text-gradient fw-bold text-uppercase">Get in touch</span>
+                <h2>Contact Me</h2>
+                <p>Have a project in mind or want to discuss AI? I'd love to hear from you.</p>
+            </div>
+            
+            <div class="row g-5">
+                <div class="col-lg-5">
+                    <div class="contact-info-box">
+                        <h3 class="mb-4">Contact Information</h3>
+                        <p class="text-muted mb-5">Fill up the form and our team will get back to you within 24 hours.</p>
+                        
+                        <div class="contact-item">
+                            <div class="icon"><i class="fa-solid fa-phone"></i></div>
+                            <div>
+                                <h4>Phone</h4>
+                                <p class="text-muted mb-0">+91 98765 43210</p>
+                            </div>
+                        </div>
+                        
+                        <div class="contact-item">
+                            <div class="icon"><i class="fa-solid fa-envelope"></i></div>
+                            <div>
+                                <h4>Email</h4>
+                                <p class="text-muted mb-0">hello@rahuldev.com</p>
+                            </div>
+                        </div>
+                        
+                        <div class="contact-item">
+                            <div class="icon"><i class="fa-solid fa-location-dot"></i></div>
+                            <div>
+                                <h4>Location</h4>
+                                <p class="text-muted mb-0">Ahmedabad, India</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-lg-7">
+                    <div class="contact-form">
+                        <form>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label fw-bold">Your Name</label>
+                                        <input type="text" class="form-control" placeholder="John Doe">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label fw-bold">Your Email</label>
+                                        <input type="email" class="form-control" placeholder="john@example.com">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Subject</label>
+                                <input type="text" class="form-control" placeholder="Project Inquiry">
+                            </div>
+                            <div class="mb-4">
+                                <label class="form-label fw-bold">Message</label>
+                                <textarea class="form-control" rows="5" placeholder="Tell me about your project..."></textarea>
+                            </div>
+                            <button type="submit" class="btn-custom w-100 border-0">Send Message</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <div class="container">
+        <section class="cta-section">
+            <h2>Let's Build Something Amazing Together</h2>
+            <p class="lead mb-0">Have a project in mind or want to learn AI? Let's connect!</p>
+            <a href="#contact" class="btn-white">Get In Touch</a>
+        </section>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row g-4">
+                <div class="col-lg-4 mb-4 mb-lg-0">
+                    <a href="#" class="footer-logo">Rahul<span>.</span>Dev</a>
+                    <p class="footer-text">AI Engineer | Flutter Developer | Mentor<br>Building intelligent solutions & empowering learners.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fa-brands fa-linkedin-in"></i></a>
+                        <a href="#"><i class="fa-brands fa-github"></i></a>
+                        <a href="#"><i class="fa-brands fa-twitter"></i></a>
+                        <a href="#"><i class="fa-brands fa-instagram"></i></a>
+                    </div>
+                </div>
+                
+                <div class="col-lg-2 col-md-4 col-6">
+                    <h4 class="footer-title">Quick Links</h4>
+                    <ul class="footer-links">
+                        <li><a href="#home">Home</a></li>
+                        <li><a href="#about">About</a></li>
+                        <li><a href="#services">Services</a></li>
+                        <li><a href="#portfolio">Projects</a></li>
+                        <li><a href="#contact">Contact</a></li>
+                    </ul>
+                </div>
+                
+                <div class="col-lg-3 col-md-4 col-6">
+                    <h4 class="footer-title">Services</h4>
+                    <ul class="footer-links">
+                        <li><a href="#">Flutter Development</a></li>
+                        <li><a href="#">Deep Learning Mentorship</a></li>
+                        <li><a href="#">AI Engineering</a></li>
+                        <li><a href="#">Consulting</a></li>
+                    </ul>
+                </div>
+                
+                <div class="col-lg-3 col-md-4">
+                    <h4 class="footer-title">Newsletter</h4>
+                    <p class="footer-text">Subscribe to get the latest insights and news.</p>
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" placeholder="Email Address">
+                        <button class="btn btn-primary bg-gradient-main border-0" type="button"><i class="fa-solid fa-paper-plane"></i></button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2026 Rahul.Dev. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap 5 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Navbar Script -->
+    <script>
+        // Navbar scroll effect
+        window.addEventListener('scroll', function() {
+            if (window.scrollY > 50) {
+                document.querySelector('.navbar').style.padding = '10px 0';
+                document.querySelector('.navbar').style.boxShadow = '0 5px 20px rgba(0,0,0,0.1)';
+            } else {
+                document.querySelector('.navbar').style.padding = '20px 0';
+                document.querySelector('.navbar').style.boxShadow = '0 5px 20px rgba(0,0,0,0.05)';
+            }
+        });
+    </script>
+</body>
+</html>
