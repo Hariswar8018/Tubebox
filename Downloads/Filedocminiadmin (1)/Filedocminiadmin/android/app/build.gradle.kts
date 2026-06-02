@@ -35,8 +35,8 @@ android {
         applicationId = "com.ignito.filedockminiadmin"
         minSdk = flutter.minSdkVersion
         targetSdk = flutter.targetSdkVersion
-        versionCode = 5
-        versionName = "2.0"
+        versionCode = 8
+        versionName = "2.2"
     }
 
     signingConfigs {

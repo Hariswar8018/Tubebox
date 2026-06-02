@@ -69,7 +69,7 @@ class HomeScreen extends StatelessWidget {
                             title: "Total",
                             value: Obx(
                               () => Text(
-                                "Rs ${wcontroller.approvedAmount.value.toStringAsFixed(2)}",
+                                "\$ ${wcontroller.approvedAmount.value.toStringAsFixed(2)}",
                                 style: TextStyle(
                                   color: kwhite,
                                   fontSize: 16,
@@ -85,7 +85,7 @@ class HomeScreen extends StatelessWidget {
                             title: "Paid",
                             value: Obx(
                               () => Text(
-                                "Rs ${billingcontroller.paid.value.toStringAsFixed(2)}",
+                                "\$ ${billingcontroller.paid.value.toStringAsFixed(2)}",
                                 style: TextStyle(
                                   color: kwhite,
                                   fontSize: 16,
@@ -102,7 +102,7 @@ class HomeScreen extends StatelessWidget {
                       title: "Pending",
                       value: Obx(
                         () => Text(
-                          "Rs ${billingcontroller.pending.value.toStringAsFixed(2)}",
+                          "\$ ${billingcontroller.pending.value.toStringAsFixed(2)}",
                           style: TextStyle(
                             color: kwhite,
                             fontSize: 14,
@@ -187,7 +187,7 @@ class HomeScreen extends StatelessWidget {
                       () => StatCardWithIcon(
                         title: "Earned",
                         value:
-                            "Rs ${controller.dailyEarned.value.toStringAsFixed(2)}",
+                            "\$ ${controller.dailyEarned.value.toStringAsFixed(2)}",
                         icon: SvgPicture.asset(
                           "assets/svg icons/home svgs/earned.svg",
                           width: 70,
